@@ -27,11 +27,11 @@ def generate_data(pdb, i):
     seq = fab.get_numbering()["H"]
     loopseq = "".join([seq[x] for x in seq if 91 < x[0] < 105])
 
-    dist_mat, cb_cb_dihedral_mat, cb_ca_dihedral_mat, ca_cb_cb_planar_mat = geom_from_residues(residues, mask_value = 1e5)
+    dist_mat, cb_cb_dihedral_mat, cb_ca_dihedral_mat, ca_cb_cb_planar_mat = geom_from_residues(residues)
 
     output_matrix = np.stack([dist_mat, cb_cb_dihedral_mat, cb_ca_dihedral_mat, ca_cb_cb_planar_mat])
     
-    np.save("data/" + pdb + heavy_chain, output_matrix.numpy())
+    np.save("data/" + pdb + heavy_chain, output_matrix)
 
     with open("data.csv", "a+") as file:
         file.write(pdb + heavy_chain + "," + loopseq + "\n")

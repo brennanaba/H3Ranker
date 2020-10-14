@@ -75,7 +75,7 @@ def ca_cb_cb_planar(ca_coords, cb_coords, mask_value):
     
     return planar_mat.transpose()
 
-def geom_from_residues(residues, mask_value = 1e5):
+def geom_from_residues(residues, mask_value = -1e5):
     """ Calculates all 4 geometry measurements for a set of residues.
     
     """
