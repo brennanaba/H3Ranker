@@ -26,6 +26,7 @@ def generate_data(pdb, i):
     residues = [r for r in chain.get_residues() if r.get_id()[0] == " " and 91 < r.get_id()[1] < 105]
     seq = fab.get_numbering()["H"]
     loopseq = "".join([seq[x] for x in seq if 91 < x[0] < 105])
+    assert len(loopseq) > 1
 
     dist_mat, cb_cb_dihedral_mat, cb_ca_dihedral_mat, ca_cb_cb_planar_mat = geom_from_residues(residues)
 
