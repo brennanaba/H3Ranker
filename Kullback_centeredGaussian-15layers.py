@@ -148,7 +148,7 @@ def batch_it(data, batch = 1, batchmin = 0):
                 second2 = pair[3]
                 second2 = encode_angles(second2)
                 seq = str(df[df.ID == structs[i]].Sequence.iloc[0])
-                first_in = one_hot(np.array([dict_[x] for x in seq]))
+                first_in = one_hot(np.array([int(dict_[x]) for x in seq]))
                 if first_in.shape[0:2] ==  first.shape[0:2]:
                     batch_tlabels.append(first_in)
                     batch_tfirst.append(first)
@@ -163,8 +163,6 @@ def batch_it(data, batch = 1, batchmin = 0):
 
 
 model = deep2d_model()
-model.summary()
-
 
 train_data, train_labels = batch_it(data,4,1)
 val_data, val_labels = batch_it(val_table)
