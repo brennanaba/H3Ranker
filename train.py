@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 from numba import jit
-from network import dist_bins, mean_dist_bins, bins, mean_angle_bins, deep2d_model, one_hot
+from H3Ranker.network import dist_bins, mean_dist_bins, bins, mean_angle_bins, deep2d_model, one_hot
 
 val_table = pd.read_csv("validation_data.csv")
 data = pd.read_csv("train_data.csv")
