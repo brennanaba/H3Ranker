@@ -61,7 +61,7 @@ def log_likelihood(probabilty_map, binned_map):
 
 
 class DecoyScorer:
-    def __init__(self, pdb_file, chain, network_weights  = "models/all_geom_kullback_drop_270520_final2.h5", model = deep2d_model()):
+    def __init__(self, pdb_file, chain, network_weights  = "models/kullback_centered_gaussian_15layers_50drop.h5", model = deep2d_model()):
         self.pdb_file = pdb_file
         self.chain = chain
         self.model = model
