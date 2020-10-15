@@ -2,7 +2,7 @@ import numpy as np
 from Bio.PDB import PDBParser, Polypeptide
 from numba import jit
 
-from utils.geometries import geom_from_residues
+from geometries import geom_from_residues
 from network import deep2d_model, one_hot, bins, dist_bins
 
 

@@ -1,5 +1,5 @@
 import numpy as np
-from utils.geometries import geom_from_residues
+from geometries import geom_from_residues
 from ABDB import database as db
 
 db.set_numbering_scheme("chothia")
