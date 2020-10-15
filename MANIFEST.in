@@ -1,0 +1,1 @@
+include H3Ranker/models/*.h5

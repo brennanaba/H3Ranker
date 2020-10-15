@@ -4,6 +4,9 @@ from ABDB import database as db
 
 db.set_numbering_scheme("chothia")
 
+import os
+current_directory = os.path.dirname(os.path.realpath(__file__))
+
 def generate_data(pdb, i):
     """ Calculates H3 geometries from SABDAB entries and stores them into a file
     
@@ -32,9 +35,9 @@ def generate_data(pdb, i):
 
     output_matrix = np.stack([dist_mat, cb_cb_dihedral_mat, cb_ca_dihedral_mat, ca_cb_cb_planar_mat])
     
-    np.save("data/" + pdb + heavy_chain, output_matrix)
+    np.save(os.path.join(os.path.join(current_directory,"data"), pdb + heavy_chain), output_matrix)
 
-    with open("data.csv", "a+") as file:
+    with open(os.path.join(current_directory,"data.csv"), "a+") as file:
         file.write(pdb + heavy_chain + "," + loopseq + "\n")
         
 if __name__ == "__main__":
@@ -44,7 +47,7 @@ if __name__ == "__main__":
     pdbs = [x for x in db.db_summary if db.db_summary[x]["resolution"].replace('.','',1).isnumeric()]
     pdbs = [x for x in pdbs if float(db.db_summary[x]["resolution"]) < 3]
         
-    with open("data.csv", "w+") as file:
+    with open(os.path.join(current_directory,"data.csv"), "w+") as file:
         file.write("ID,Sequence\n")
     
     for pdb in pdbs:

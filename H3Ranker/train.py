@@ -2,9 +2,11 @@ import numpy as np
 import pandas as pd
 from numba import jit
 from H3Ranker.network import dist_bins, mean_dist_bins, bins, mean_angle_bins, deep2d_model, one_hot
+import os
 
-val_table = pd.read_csv("validation_data.csv")
-data = pd.read_csv("train_data.csv")
+current_directory = os.path.dirname(os.path.realpath(__file__))
+val_table = pd.read_csv(os.path.join(current_directory, "validation_data.csv"))
+data = pd.read_csv(os.path.join(current_directory, "train_data.csv"))
 
 dict_ = {'A': '0', 'C': '1', 'D': '2', 'E': '3', 'F': '4', 'G': '5', 'H': '6', 'I': '7', 'K': '8', 'L': '9', 'M': '10', 'N': '11', 'P': '12', 'Q': '13', 'R': '14', 'S': '15', 'T': '16', 'V': '17', 'W': '18', 'Y': '19'}
 classes = len(bins)
@@ -65,7 +67,7 @@ def batch_it(data, batch = 1, batchmin = 0):
             batch_tsecond2 = []
             batch_tlabels = []
             for i in range(len(structs)):
-                pair = np.load("data/"+structs[i]+".npy")
+                pair = np.load(os.path.join(current_directory, "data/"+structs[i]+".npy"))
                 pair[pair == -1] = -float("Inf")
                 pair[np.isnan(pair)] = -float("Inf")
                 first = pair[0] 
@@ -126,8 +128,8 @@ if __name__ == "__main__":
         if loss < best_loss:
             best_loss = loss
             best_model.set_weights(model.get_weights())
-            best_model.save_weights("models/kullback_centered_gaussian_15layers_50dropout_checkpoint.h5")
+            best_model.save_weights(os.path.join(current_directory,"models/kullback_centered_gaussian_15layers_50dropout_checkpoint.h5"))
     
-    model.save_weights("models/kullback_centered_gaussian_15layers_50drop.h5")
+    model.save_weights(os.path.join(current_directory,"models/kullback_centered_gaussian_15layers_50drop.h5"))
     
 
