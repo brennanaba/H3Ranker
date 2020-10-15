@@ -36,6 +36,8 @@ def gauss_encode_angles(measured, std = (bins[3] - bins[2])):
 
 @jit
 def encode_distances(matrix):
+    """ Goes throught each distance measurement and encodes it into different bins as a gaussian.
+    """
     end_shape = (matrix.shape[0], matrix.shape[1], classes)
     finish = np.zeros(end_shape)
     for i in range(end_shape[0]):
@@ -45,6 +47,8 @@ def encode_distances(matrix):
 
 @jit
 def encode_angles(matrix):
+    """ Goes throught each angle measurement and encodes it into different bins as a gaussian.
+    """
     end_shape = (matrix.shape[0], matrix.shape[1], classes)
     finish = np.zeros(end_shape)
     for i in range(end_shape[0]):
@@ -53,6 +57,9 @@ def encode_angles(matrix):
     return finish
 
 def batch_it(data, batch = 1, batchmin = 0):
+    """ Batches training data into groups of `batch` with the same sequence lenght. 
+    If there are less than `batchmin` with the same sequence length, they are discarded.
+    """
     train_data = []
     train_labels = []
     data["seqlen"] = [len(str(x)) for x in data.Sequence.values]
@@ -112,7 +119,7 @@ if __name__ == "__main__":
     
     
     print("Training loss    | Validation Loss")
-    for j in range(150):
+    for j in range(200):
         val_loss_one = []
         train_loss_one = []
         for i in indices:
@@ -128,8 +135,8 @@ if __name__ == "__main__":
         if loss < best_loss:
             best_loss = loss
             best_model.set_weights(model.get_weights())
-            best_model.save_weights(os.path.join(current_directory,"models/kullback_centered_gaussian_15layers_50dropout_checkpoint.h5"))
+            best_model.save_weights(os.path.join(current_directory,"models/kullback_centered_gaussian_20blocks_50dropout_75binseparation_checkpoint.h5"))
     
-    model.save_weights(os.path.join(current_directory,"models/kullback_centered_gaussian_15layers_50drop.h5"))
+    model.save_weights(os.path.join(current_directory,"models/kullback_centered_gaussian_20blocks_50drop_75binseparation.h5"))
     
 

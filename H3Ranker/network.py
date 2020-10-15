@@ -7,15 +7,18 @@ import numpy as np
 from numba import jit
 
 
-angle_steps = 15.
+# REMEMBER TO pip install . EACH TIME YOU UPDATE
+
+angle_steps = 7.5
 bins = np.arange(-180.,181,angle_steps)
 mean_angle_bins = (bins[1:] + bins[:-1]) / 2
 classes = len(bins)
 
-dist_bins = np.linspace(3,14,classes - 2)
+dist_bins = np.linspace(3,14.5,classes - 2)
 dist_bins = np.append(dist_bins,18)
 mean_dist_bins = (dist_bins[1:] + dist_bins[:-1]) / 2
 
+dilations = [1,2,4,8]
 
 @jit
 def encode(x, classes):
@@ -38,11 +41,11 @@ def deep2d_model():
     mix2 = SpatialDropout2D(0.5)(mix1)
     
     block_start = mix2
-    for i in range(15):
-        block_conv1 = Conv2D(64, kernel_size= 5, strides = 1, padding= "same", trainable = True)(block_start)
+    for i in range(20):
+        block_conv1 = Conv2D(64, kernel_size= 5, strides = 1, padding= "same", trainable = True, dilation_rate = dilations[i%4])(block_start)
         block_act = ReLU()(block_conv1)
         block_drop = SpatialDropout2D(0.5)(block_act)
-        block_conv2 = Conv2D(64, kernel_size= 5, strides = 1, padding= "same", trainable = True)(block_drop)
+        block_conv2 = Conv2D(64, kernel_size= 5, strides = 1, padding= "same", trainable = True, dilation_rate = dilations[i%4])(block_drop)
         block_norm = BatchNormalization(scale = True)(block_conv2)
         block_start = Add()([block_start,block_norm])
         
@@ -51,7 +54,7 @@ def deep2d_model():
     drop = SpatialDropout2D(0.5)(activate)
     
     
-    # This should be number of classes
+    # This should be number of classes, defined by the number of bins
     dist_1 = Conv2D(classes, kernel_size= 3, strides = 1, padding= "same", trainable = True)(drop)
     dist_2 = Permute(dims=(2,1,3))(dist_1)
     dist_symmetry = Add()([dist_1,dist_2])
@@ -69,5 +72,5 @@ def deep2d_model():
     phi_end = Activation(activation='softmax')(phi_1)
     
     model = Model(inp, outputs = [dist_end,omega_end,theta_end,phi_end])
-    model.compile(optimizer = Adam(2e-3), loss = KLDivergence())
+    model.compile(optimizer = Adam(1e-3), loss = KLDivergence())
     return model

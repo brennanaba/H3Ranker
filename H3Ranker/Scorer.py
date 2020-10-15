@@ -54,11 +54,11 @@ def log_likelihood(probabilty_map, binned_map):
     xsize, ysize = len(binned_map), len(binned_map[0])
     for i in range(xsize):
         for j in range(ysize):
-            filt = probabilty_map[i, j, binned_map[i, j]] > 0.05
+            filt = probabilty_map[i, j, binned_map[i, j]] > 1/len(bins)
             if filt:
                 score = score + np.log(probabilty_map[i, j, binned_map[i, j]])
             else:
-                score = score - 2.995732273553991
+                score = score + np.log(1/len(bins))
     return -score
 
 
