@@ -118,5 +118,5 @@ def geom_from_residues(residues, mask_value = -1e5):
     cb_ca_dihedral_mat = cb_ca_dihedral(ca_coords, cb_coords, n_coords, mask_value)
     ca_cb_cb_planar_mat = ca_cb_cb_planar(ca_coords, cb_coords, mask_value)
     
-    return dist_mat, cb_cb_dihedral_mat, cb_ca_dihedral_mat, 2*ca_cb_cb_planar_mat-180
+    return dist_mat, cb_cb_dihedral_mat, cb_ca_dihedral_mat, ca_cb_cb_planar_mat
 
