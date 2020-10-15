@@ -1,2 +1,4 @@
 __pycache__/
 .spyproject/
+nohup.out
+.ipynb_checkpoints/
