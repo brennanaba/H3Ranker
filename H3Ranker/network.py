@@ -18,7 +18,7 @@ dist_bins = np.linspace(3,14.5,classes - 2)
 dist_bins = np.append(dist_bins,18)
 mean_dist_bins = (dist_bins[1:] + dist_bins[:-1]) / 2
 
-dilations = [1,2,4,8]
+dilations = [1,2,4]
 
 @jit
 def encode(x, classes):
@@ -42,10 +42,10 @@ def deep2d_model():
     
     block_start = mix2
     for i in range(20):
-        block_conv1 = Conv2D(64, kernel_size= 5, strides = 1, padding= "same", trainable = True, dilation_rate = dilations[i%4])(block_start)
+        block_conv1 = Conv2D(64, kernel_size= 3, strides = 1, padding= "same", trainable = True, dilation_rate = dilations[i%len(dilations)])(block_start)
         block_act = ReLU()(block_conv1)
         block_drop = SpatialDropout2D(0.5)(block_act)
-        block_conv2 = Conv2D(64, kernel_size= 5, strides = 1, padding= "same", trainable = True, dilation_rate = dilations[i%4])(block_drop)
+        block_conv2 = Conv2D(64, kernel_size= 3, strides = 1, padding= "same", trainable = True, dilation_rate = dilations[i%len(dilations)])(block_drop)
         block_norm = BatchNormalization(scale = True)(block_conv2)
         block_start = Add()([block_start,block_norm])
         
