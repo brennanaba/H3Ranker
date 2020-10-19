@@ -5,20 +5,21 @@ from keras.losses import KLDivergence
 from keras.layers import Activation, Add, Conv2D, SpatialDropout2D, Permute, ReLU, Input, BatchNormalization
 import numpy as np
 from numba import jit
+import os
 
+current_directory = os.path.dirname(os.path.realpath(__file__))
+latest = os.path.join(current_directory,"models/kullback_centered_gaussian_10blocks_50dropout_12binseparation_checkpoint.h5")
 
 # REMEMBER TO pip install . EACH TIME YOU UPDATE
 
-angle_steps = 7.5
+angle_steps = 12.0
 bins = np.arange(-180.,181,angle_steps)
 mean_angle_bins = (bins[1:] + bins[:-1]) / 2
 classes = len(bins)
 
-dist_bins = np.linspace(3,14.5,classes - 2)
+dist_bins = np.linspace(2,16,classes - 2)
 dist_bins = np.append(dist_bins,18)
 mean_dist_bins = (dist_bins[1:] + dist_bins[:-1]) / 2
-
-dilations = [1,2,4]
 
 @jit
 def encode(x, classes):
@@ -41,11 +42,11 @@ def deep2d_model():
     mix2 = SpatialDropout2D(0.5)(mix1)
     
     block_start = mix2
-    for i in range(20):
-        block_conv1 = Conv2D(64, kernel_size= 3, strides = 1, padding= "same", trainable = True, dilation_rate = dilations[i%len(dilations)])(block_start)
+    for i in range(10):
+        block_conv1 = Conv2D(64, kernel_size= 5, strides = 1, padding= "same", trainable = True)(block_start)
         block_act = ReLU()(block_conv1)
         block_drop = SpatialDropout2D(0.5)(block_act)
-        block_conv2 = Conv2D(64, kernel_size= 3, strides = 1, padding= "same", trainable = True, dilation_rate = dilations[i%len(dilations)])(block_drop)
+        block_conv2 = Conv2D(64, kernel_size= 5, strides = 1, padding= "same", trainable = True)(block_drop)
         block_norm = BatchNormalization(scale = True)(block_conv2)
         block_start = Add()([block_start,block_norm])
         

@@ -3,11 +3,7 @@ from Bio.PDB import PDBParser, Polypeptide
 from numba import jit
 
 from H3Ranker.geometries import geom_from_residues
-from H3Ranker.network import deep2d_model, one_hot, bins, dist_bins
-import os
-
-
-current_directory = os.path.dirname(os.path.realpath(__file__))
+from H3Ranker.network import deep2d_model, one_hot, bins, dist_bins, latest
 
 def get_models(fread_output):
     res = PDBParser(QUIET=True).get_structure("outs",fread_output)
@@ -64,7 +60,7 @@ def log_likelihood(probabilty_map, binned_map):
 
 
 class DecoyScorer:
-    def __init__(self, pdb_file, chain, network_weights  = os.path.join(current_directory, "models/kullback_centered_gaussian_15layers_50drop.h5"), model = deep2d_model()):
+    def __init__(self, pdb_file, chain, network_weights  = latest, model = deep2d_model()):
         self.pdb_file = pdb_file
         self.chain = chain
         self.model = model

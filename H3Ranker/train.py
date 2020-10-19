@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 from numba import jit
-from H3Ranker.network import dist_bins, mean_dist_bins, bins, mean_angle_bins, deep2d_model, one_hot
+from H3Ranker.network import dist_bins, mean_dist_bins, bins, mean_angle_bins, deep2d_model, one_hot, latest
 import os
 
 current_directory = os.path.dirname(os.path.realpath(__file__))
@@ -135,8 +135,4 @@ if __name__ == "__main__":
         if loss < best_loss:
             best_loss = loss
             best_model.set_weights(model.get_weights())
-            best_model.save_weights(os.path.join(current_directory,"models/kullback_centered_gaussian_20blocks_50dropout_75binseparation_checkpoint.h5"))
-    
-    model.save_weights(os.path.join(current_directory,"models/kullback_centered_gaussian_20blocks_50drop_75binseparation.h5"))
-    
-
+            best_model.save_weights(latest)
