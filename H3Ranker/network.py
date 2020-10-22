@@ -8,7 +8,7 @@ from numba import jit
 import os
 
 current_directory = os.path.dirname(os.path.realpath(__file__))
-latest = os.path.join(current_directory,"models/kullback_centered_gaussian_10blocks_50dropout_12binseparation_checkpoint.h5")
+latest = os.path.join(current_directory,"models/kullback_centered_gaussian_20blocks_50dropout_12binseparation_pretrain.h5")
 
 # REMEMBER TO pip install . EACH TIME YOU UPDATE
 
@@ -36,13 +36,13 @@ def one_hot(num_list, classes = 20):
             finish[i,j] = encode(num_list[i], classes) + encode(num_list[j], classes) 
     return finish
 
-def deep2d_model():
+def deep2d_model(lr = 1e-3, blocks = 20):
     inp = Input(shape=(None, None, 20))
     mix1 = Conv2D(64, kernel_size= 5, strides = 1, padding= "same", name = "2Dconv_1", trainable = True)(inp)
     mix2 = SpatialDropout2D(0.5)(mix1)
     
     block_start = mix2
-    for i in range(10):
+    for i in range(blocks):
         block_conv1 = Conv2D(64, kernel_size= 5, strides = 1, padding= "same", trainable = True)(block_start)
         block_act = ReLU()(block_conv1)
         block_drop = SpatialDropout2D(0.5)(block_act)
@@ -73,5 +73,5 @@ def deep2d_model():
     phi_end = Activation(activation='softmax')(phi_1)
     
     model = Model(inp, outputs = [dist_end,omega_end,theta_end,phi_end])
-    model.compile(optimizer = Adam(1e-3), loss = KLDivergence())
+    model.compile(optimizer = Adam(lr), loss = KLDivergence())
     return model
