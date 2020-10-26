@@ -103,7 +103,7 @@ if __name__ == "__main__":
     
     model = deep2d_model()
     
-    train_data, train_labels = batch_it(data,4,1, current_directory = "/data/localhost/kenyon/general_loops")
+    train_data, train_labels = batch_it(data,4,1)
     val_data, val_labels = batch_it(val_table)
     
     
