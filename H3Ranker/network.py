@@ -8,7 +8,7 @@ from numba import jit
 import os
 
 current_directory = os.path.dirname(os.path.realpath(__file__))
-latest = os.path.join(current_directory,"models/kullback_centered_gaussian_20blocks_50dropout_12binseparation_pretrain.h5")
+latest = os.path.join(current_directory,"models/kullback_centered_gaussian_20blocks_50dropout_12binseparation.h5")
 
 # REMEMBER TO pip install . EACH TIME YOU UPDATE
 
