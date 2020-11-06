@@ -10,7 +10,7 @@ setup(
     install_requires=[
         'tensorflow==2.0.0',
         'biopython>=1.78',
-        'Keras>=2',
+        'Keras==2.3.1',
         'numba>=0.51.2',
         'numpy>=1.18.5',
         'pandas>=1.1.3',
