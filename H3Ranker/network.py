@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from keras.models import Model
 from keras.optimizers import Adam
-from keras.losses import KLDivergence
+#from keras.losses import KLDivergence
 from keras.layers import Activation, Add, Conv2D, SpatialDropout2D, Permute, ReLU, Input, BatchNormalization
 import numpy as np
 from numba import jit
@@ -20,6 +20,12 @@ classes = len(bins)
 dist_bins = np.linspace(2,16,classes - 2)
 dist_bins = np.append(dist_bins,18)
 mean_dist_bins = (dist_bins[1:] + dist_bins[:-1]) / 2
+
+def KLDivergence(y_true, y_pred):
+    y_true = K.clip(y_true, K.epsilon(), 1)
+    y_pred = K.clip(y_pred, K.epsilon(), 1)
+    return K.sum(y_true * K.log(y_true / y_pred), axis=-1)
+
 
 @jit
 def encode(x, classes):
