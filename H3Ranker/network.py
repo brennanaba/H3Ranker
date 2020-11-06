@@ -8,7 +8,7 @@ from numba import jit
 import os
 
 current_directory = os.path.dirname(os.path.realpath(__file__))
-latest = os.path.join(current_directory,"models/kullback_centered_gaussian_20blocks_50dropout_12binseparation.h5")
+latest = os.path.join(current_directory,"models/kullback_centered_gaussian_10blocks_50dropout_12binseparation.h5")
 
 # REMEMBER TO pip install . EACH TIME YOU UPDATE
 
@@ -36,7 +36,7 @@ def one_hot(num_list, classes = 20):
             finish[i,j] = encode(num_list[i], classes) + encode(num_list[j], classes) 
     return finish
 
-def deep2d_model(lr = 1e-3, blocks = 20):
+def deep2d_model(lr = 1e-3, blocks = 10):
     inp = Input(shape=(None, None, 20))
     mix1 = Conv2D(64, kernel_size= 5, strides = 1, padding= "same", name = "2Dconv_1", trainable = True)(inp)
     mix2 = SpatialDropout2D(0.5)(mix1)
@@ -47,7 +47,7 @@ def deep2d_model(lr = 1e-3, blocks = 20):
         block_act = ReLU()(block_conv1)
         block_drop = SpatialDropout2D(0.5)(block_act)
         block_conv2 = Conv2D(64, kernel_size= 5, strides = 1, padding= "same", trainable = True)(block_drop)
-        block_norm = BatchNormalization(scale = True)(block_conv2)
+        block_norm = BatchNormalization(scale = True, trainable = True)(block_conv2)
         block_start = Add()([block_start,block_norm])
         
     block_end = block_start

@@ -10,6 +10,7 @@ from numba import jit
 from H3Ranker.network import dist_bins, mean_dist_bins, bins, mean_angle_bins, deep2d_model, one_hot, latest
 import os
 
+latest = latest[:-3] + "_pretrained.h5"
 current_directory = ""
 val_table = pd.read_csv(os.path.join(current_directory, "validation_data.csv"))
 data = pd.read_csv(os.path.join("/data/localhost/kenyon/general_loops", "data.csv"))
@@ -71,7 +72,7 @@ def one_run(data, model, batch = 1, batchmin = 0, current_directory = current_di
     data["seqlen"] = [len(str(x)) for x in data.Sequence.values]
     k = 0
     o = 0
-    for l in data.seqlen:
+    for l in [x for x in data.seqlen if x < 8]:
         df = data[data.seqlen == l].sample(n=batch)
         structs = df.ID.values
         batch_tfirst = []

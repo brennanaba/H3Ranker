@@ -56,7 +56,7 @@ def encode_angles(matrix):
             finish[i,j] = gauss_encode_angles(matrix[i,j])
     return finish
 
-def batch_it(data, batch = 1, batchmin = 0, current_directory = current_directory):
+def batch_it(data, batch = 1, batchmin = 0):
     """ Batches training data into groups of `batch` with the same sequence lenght. 
     If there are less than `batchmin` with the same sequence length, they are discarded.
     """
@@ -101,9 +101,9 @@ def batch_it(data, batch = 1, batchmin = 0, current_directory = current_director
 
 if __name__ == "__main__":
     
-    model = deep2d_model()
+    model = deep2d_model(lr = 1e-4)
     
-    train_data, train_labels = batch_it(data,4,1, current_directory = "/data/localhost/kenyon/general_loops")
+    train_data, train_labels = batch_it(data,4,1)
     val_data, val_labels = batch_it(val_table)
     
     
