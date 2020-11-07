@@ -3,6 +3,7 @@ from keras.models import Model
 from keras.optimizers import Adam
 #from keras.losses import KLDivergence
 from keras.layers import Activation, Add, Conv2D, SpatialDropout2D, Permute, ReLU, Input, BatchNormalization
+from keras import backend as K
 import numpy as np
 from numba import jit
 import os
