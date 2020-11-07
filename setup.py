@@ -8,9 +8,9 @@ setup(
     include_package_data=True,
     packages = find_packages(include=('H3Ranker', 'H3Ranker.*')),
     install_requires=[
-        'tensorflow==2.0.0',
+        'tensorflow>=2.0.0',
         'biopython>=1.78',
-        'Keras==2.3.1',
+        'Keras>=2.3.0',
         'numba>=0.51.2',
         'numpy>=1.18.5',
         'pandas>=1.1.3',
