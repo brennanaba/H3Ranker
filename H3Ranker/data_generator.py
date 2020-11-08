@@ -7,7 +7,7 @@ db.set_numbering_scheme("chothia")
 import os
 current_directory = os.path.dirname(os.path.realpath(__file__))
 
-def generate_data(pdb, i):
+def generate_data(pdb, i, resol):
     """ Calculates H3 geometries from SABDAB entries and stores them into a file
     
     """
@@ -38,7 +38,7 @@ def generate_data(pdb, i):
     np.save(os.path.join(os.path.join(current_directory,"data"), pdb + heavy_chain), output_matrix)
 
     with open(os.path.join(current_directory,"data.csv"), "a+") as file:
-        file.write(pdb + heavy_chain + "," + loopseq + "\n")
+        file.write(pdb + heavy_chain + "," + loopseq + "," + resol + "\n")
         
 if __name__ == "__main__":
     # If run as main calculates H3 geometries for all antibodies in SABDAB.
@@ -51,10 +51,12 @@ if __name__ == "__main__":
         file.write("ID,Sequence\n")
     
     for pdb in pdbs:
-        fabs = db.fetch(pdb).fabs
+        struc = db.fetch(pdb)
+        fabs = struc.fabs
+        resolution = struc.get_resolution()
         for i in range(len(fabs)):
             try:
-                generate_data(pdb, i)
+                generate_data(pdb, i, resolution)
             except Exception:
                 print(pdb)
 
