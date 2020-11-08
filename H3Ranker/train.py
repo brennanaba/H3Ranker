@@ -113,20 +113,19 @@ if __name__ == "__main__":
     
     
     val_loss = []
-    train_loss = []
+    train_loss = float("Inf")
     best_loss = float("Inf")
     best_model = deep2d_model()
     
     
     print("Training loss    | Validation Loss")
-    for j in range(200):
+    while train_loss - best_loss < 0.3:
         val_loss_one = []
         train_loss_one = []
         for i in indices:
             train_loss_one += model.fit(train_labels[i], train_data[i], verbose = 0).history["loss"]
-        tloss = np.mean(train_loss_one)
-        print(str(j) + " " + str(tloss), end=" ")
-        train_loss.append(tloss)
+        train_loss = np.mean(train_loss_one)
+        print(str(j) + " " + str(train_loss), end=" ")
         for i in range(len(val_data)):
             val_loss_one.append(model.evaluate(val_labels[i], val_data[i], verbose = 0)[0])
         loss = np.mean(val_loss_one)
