@@ -119,7 +119,7 @@ if __name__ == "__main__":
     
     j = 0
     print("Training loss    | Validation Loss")
-    while (j < 500) and (not train_loss - best_loss < 0.3):
+    while (j < 500) and (not train_loss - best_loss < -0.3):
         j = j + 1
         val_loss_one = []
         train_loss_one = []
