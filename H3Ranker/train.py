@@ -117,10 +117,9 @@ if __name__ == "__main__":
     best_loss = float("Inf")
     best_model = deep2d_model()
     
-    j = 0
+    o = 0
     print("Training loss    | Validation Loss")
-    while (j < 500) and (not train_loss - best_loss < -0.3):
-        j = j + 1
+    for j in range(500):
         val_loss_one = []
         train_loss_one = []
         for i in indices:
@@ -133,6 +132,12 @@ if __name__ == "__main__":
         print(loss)
         val_loss.append(loss)
         if loss < best_loss:
+            o = 0
             best_loss = loss
             best_model.set_weights(model.get_weights())
             best_model.save_weights(latest)
+        else:
+            o = o + 1
+            if o > 20:
+                break
+            
