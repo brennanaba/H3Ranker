@@ -35,25 +35,25 @@ def gauss_encode_angles(measured, std = (bins[3] - bins[2])):
         return answer/np.sum(answer)
 
 @jit
-def encode_distances(matrix):
+def encode_distances(matrix, std = (dist_bins[3] - dist_bins[2])):
     """ Goes throught each distance measurement and encodes it into different bins as a gaussian.
     """
     end_shape = (matrix.shape[0], matrix.shape[1], classes)
     finish = np.zeros(end_shape)
     for i in range(end_shape[0]):
         for j in range(end_shape[1]):
-            finish[i,j] = gauss_encode_distance(matrix[i,j])
+            finish[i,j] = gauss_encode_distance(matrix[i,j], std = std)
     return finish
 
 @jit
-def encode_angles(matrix):
+def encode_angles(matrix, std = (bins[3] - bins[2])):
     """ Goes throught each angle measurement and encodes it into different bins as a gaussian.
     """
     end_shape = (matrix.shape[0], matrix.shape[1], classes)
     finish = np.zeros(end_shape)
     for i in range(end_shape[0]):
         for j in range(end_shape[1]):
-            finish[i,j] = gauss_encode_angles(matrix[i,j])
+            finish[i,j] = gauss_encode_angles(matrix[i,j], std = std)
     return finish
 
 def batch_it(data, batch = 1, batchmin = 0):
@@ -68,6 +68,7 @@ def batch_it(data, batch = 1, batchmin = 0):
         df = data[data.seqlen == l]
         for j in range(len(df)//batch + 1):
             structs = df.ID.values[j*batch:(j+1)*batch]
+            resol = df.Resolution.values[j*batch:(j+1)*batch]
             batch_tfirst = []
             batch_tsecond = []
             batch_tsecond1 = []
@@ -78,7 +79,7 @@ def batch_it(data, batch = 1, batchmin = 0):
                 pair[pair == -1] = -float("Inf")
                 pair[np.isnan(pair)] = -float("Inf")
                 first = pair[0] 
-                first = encode_distances(first)
+                first = encode_distances(first, float(resol[i]))
                 second = pair[1]
                 second = encode_angles(second)
                 second1 = pair[2]
