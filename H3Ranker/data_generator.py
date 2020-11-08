@@ -48,7 +48,7 @@ if __name__ == "__main__":
     pdbs = [x for x in pdbs if float(db.db_summary[x]["resolution"]) < 3]
         
     with open(os.path.join(current_directory,"data.csv"), "w+") as file:
-        file.write("ID,Sequence\n")
+        file.write("ID,Sequence,Resolution\n")
     
     for pdb in pdbs:
         struc = db.fetch(pdb)
