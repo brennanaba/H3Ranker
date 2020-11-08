@@ -6,3 +6,4 @@ envH3/
 *.ipynb
 *.out
 *.run
+.nfs*
