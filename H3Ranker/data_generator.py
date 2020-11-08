@@ -43,6 +43,10 @@ def generate_data(pdb, i, resol):
 if __name__ == "__main__":
     # If run as main calculates H3 geometries for all antibodies in SABDAB.
 
+    # Start by trying to update the AB database
+    try:
+        from ABDB.ABDB_updater import update
+        update([])
     # If you do not even have a resolution what are you doing here?
     pdbs = [x for x in db.db_summary if db.db_summary[x]["resolution"].replace('.','',1).isnumeric()]
     pdbs = [x for x in pdbs if float(db.db_summary[x]["resolution"]) < 3]
