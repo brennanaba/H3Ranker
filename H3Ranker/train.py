@@ -64,6 +64,8 @@ def batch_it(data, batch = 1, batchmin = 0):
     train_labels = []
     data["seqlen"] = [len(str(x)) for x in data.Sequence.values]
     lens = np.unique(data.seqlen.values)
+    dist_diff = (dist_bins[3] - dist_bins[2])
+    angle_diff = (bins[3] - bins[2])
     for l in lens:
         df = data[data.seqlen == l]
         for j in range(len(df)//batch + 1):
@@ -79,13 +81,13 @@ def batch_it(data, batch = 1, batchmin = 0):
                 pair[pair == -1] = -float("Inf")
                 pair[np.isnan(pair)] = -float("Inf")
                 first = pair[0] 
-                first = encode_distances(first, float(resol[i]))
+                first = encode_distances(first, float(resol[i])/2)
                 second = pair[1]
-                second = encode_angles(second)
+                second = encode_angles(second, float(resol[i])*angle_diff/(2*dist_diff))
                 second1 = pair[2]
-                second1 = encode_angles(second1)
+                second1 = encode_angles(second1, float(resol[i])*angle_diff/(2*dist_diff))
                 second2 = pair[3]
-                second2 = encode_angles(second2)
+                second2 = encode_angles(second2, float(resol[i])*angle_diff/(2*dist_diff))
                 seq = str(df[df.ID == structs[i]].Sequence.iloc[0])
                 first_in = one_hot(np.array([int(dict_[x]) for x in seq]))
                 if first_in.shape[0:2] ==  first.shape[0:2]:
