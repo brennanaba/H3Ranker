@@ -87,25 +87,25 @@ def geom_from_residues(residues, mask_value = -1e5):
         elif 'CA' in residue:
             return residue['CA'].get_coord()
         else:
-            return [0, 0, 0]
+            return [float("Nan"), float("Nan"), float("Nan")]
 
     def get_ca(residue):
         if 'CA' in residue:
             return residue['CA'].get_coord()
         else:
-            return [0, 0, 0]
+            return [float("Nan"), float("Nan"), float("Nan")]
 
     def get_cb(residue):
         if 'CB' in residue:
             return residue['CB'].get_coord()
         else:
-            return [0, 0, 0]
+            return [float("Nan"), float("Nan"), float("Nan")]
     
     def get_n(residue):
         if 'N' in residue:
             return residue['N'].get_coord()
         else:
-            return [0, 0, 0]
+            return [float("Nan"), float("Nan"), float("Nan")]
 
     cb_ca_coords = np.array([[get_cb_or_ca(r) for r in residues]])
     ca_coords = np.array([[get_ca(r) for r in residues]])
