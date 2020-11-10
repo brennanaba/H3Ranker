@@ -35,7 +35,7 @@ def encode(x, classes):
     return one_hot
 
 @jit
-def one_hot(num_list, classes = 20):
+def one_hot(num_list, classes = 21):
     end_shape = (len(num_list), len(num_list), classes)
     finish = np.zeros(end_shape)
     for i in range(end_shape[0]):
@@ -44,7 +44,7 @@ def one_hot(num_list, classes = 20):
     return finish
 
 def deep2d_model(lr = 1e-3, blocks = 10):
-    inp = Input(shape=(None, None, 20))
+    inp = Input(shape=(None, None, 21))
     mix1 = Conv2D(64, kernel_size= 5, strides = 1, padding= "same", name = "2Dconv_1", trainable = True)(inp)
     mix2 = SpatialDropout2D(0.5)(mix1)
     
