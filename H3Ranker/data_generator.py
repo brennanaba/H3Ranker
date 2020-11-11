@@ -40,20 +40,25 @@ def generate_data(pdb,i,resol):
         
 if __name__ == "__main__":
     # If run as main calculates H3 geometries for all antibodies in SABDAB.
+    try:
+        from ABDB.ABDB_updater import update
+        update([])
+    except Exception:
+        print("Update Failed")
 
     # If you do not even have a resolution what are you doing here?
     pdbs = [x for x in db.db_summary if db.db_summary[x]["resolution"].replace('.','',1).isnumeric()]
     pdbs = [x for x in pdbs if float(db.db_summary[x]["resolution"]) < 3]
-        
+
     with open(os.path.join(current_directory,"data.csv"), "w+") as file:
         file.write("ID,Sequence,Resolution\n")
-    
-    for pdb in pdbs:
-        fabs = db.fetch(pdb).fabs
-        for i in range(len(fabs)):
+
+    for pdb in pdbs[:100]:
+        p = db.fetch(pdb)
+        for i in range(len(p.fabs)):
             try:
-                generate_data(pdb, i)
-            except Exception:
+                generate_data(pdb, i, p.get_resolution())
+            except Exception as e:
                 print(pdb)
 
 
