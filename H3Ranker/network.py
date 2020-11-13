@@ -23,7 +23,7 @@ dist_bins = np.append(dist_bins,18)
 mean_dist_bins = (dist_bins[1:] + dist_bins[:-1]) / 2
 
 def KLDivergence(y_true, y_pred):
-    return 0.1*kl_divergence(y_true,y_pred) + mse(y_true, y_pred)
+    return (kl_divergence(y_true,y_pred) + kl_divergence(y_pred, y_true))/2
 
 
 @jit
