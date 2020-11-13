@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from keras.models import Model
 from keras.optimizers import Adam
-#from keras.losses import KLDivergence
+from keras.losses import kl_divergence, mse
 from keras.layers import Activation, Add, Conv2D, SpatialDropout2D, Permute, ReLU, Input, BatchNormalization
 from keras import backend as K
 import numpy as np
@@ -23,9 +23,7 @@ dist_bins = np.append(dist_bins,18)
 mean_dist_bins = (dist_bins[1:] + dist_bins[:-1]) / 2
 
 def KLDivergence(y_true, y_pred):
-    y_true = K.clip(y_true, K.epsilon(), 1)
-    y_pred = K.clip(y_pred, K.epsilon(), 1)
-    return K.sum(y_true * K.log(y_true / y_pred), axis=-1)
+    return 0.1*kl_divergence(y_true,y_pred) + mse(y_true, y_pred)
 
 
 @jit
