@@ -104,7 +104,7 @@ def batch_it(data, batch = 1, batchmin = 0):
 
 
 if __name__ == "__main__":
-    latest = str(sys.argv[1])
+    latest = os.path.join(current_directory, "models", str(sys.argv[1]))
     print("Saving model to: " + latest)
     model = deep2d_model(lr = 1e-4)
     
