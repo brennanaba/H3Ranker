@@ -1,8 +1,9 @@
 import numpy as np
 import pandas as pd
 from numba import jit
-from H3Ranker.network import dist_bins, mean_dist_bins, bins, mean_angle_bins, deep2d_model, one_hot, latest
+from H3Ranker.network import dist_bins, mean_dist_bins, bins, mean_angle_bins, deep2d_model, one_hot
 import os
+import sys
 
 current_directory = os.path.dirname(os.path.realpath(__file__))
 val_table = pd.read_csv(os.path.join(current_directory, "validation_data.csv"))
@@ -103,7 +104,7 @@ def batch_it(data, batch = 1, batchmin = 0):
 
 
 if __name__ == "__main__":
-    
+    latest = str(sys.argv[1])
     model = deep2d_model(lr = 1e-4)
     
     train_data, train_labels = batch_it(data,4,1)
