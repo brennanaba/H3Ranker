@@ -4,6 +4,7 @@ from numba import jit
 
 from H3Ranker.geometries import geom_from_residues
 from H3Ranker.network import deep2d_model, one_hot, bins, dist_bins, latest
+from H3Ranker.train import dict_
 
 def get_models(fread_output):
     res = PDBParser(QUIET=True).get_structure("outs",fread_output)
@@ -79,7 +80,7 @@ class DecoyScorer:
         self.original_residues = get_anchors(pdb_file, chain)
         self.sequence = Polypeptide.Polypeptide(self.original_residues).get_sequence()
         to_numbers = Polypeptide.d1_to_index
-        self.numerical_sequence = [to_numbers[x] for x in self.sequence]
+        self.numerical_sequence = [dict_[x] for x in self.sequence]
         model_input = np.expand_dims(one_hot(np.array(self.numerical_sequence)),0)
 
         self.distance_predictions, self.omega_predictions, self.theta_predictions, self.phi_predictions = self.model.predict(model_input)
