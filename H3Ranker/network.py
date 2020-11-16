@@ -78,5 +78,5 @@ def deep2d_model(lr = 1e-3, blocks = 10):
     phi_end = Activation(activation='softmax')(phi_1)
     
     model = Model(inp, outputs = [dist_end,omega_end,theta_end,phi_end])
-    model.compile(optimizer = Adam(lr), loss = KLDivergence)
+    model.compile(optimizer = Adam(lr), loss = kl_divergence)
     return model
