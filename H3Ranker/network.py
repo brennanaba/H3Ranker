@@ -41,17 +41,17 @@ def one_hot(num_list, classes = 21):
             finish[i,j] = encode(num_list[i], classes) + encode(num_list[j], classes) 
     return finish
 
-def deep2d_model(lr = 1e-3, blocks = 10):
+def deep2d_model(lr = 1e-3, blocks = 30):
     inp = Input(shape=(None, None, 21))
     mix1 = Conv2D(64, kernel_size= 5, strides = 1, padding= "same", name = "2Dconv_1", trainable = True)(inp)
     mix2 = SpatialDropout2D(0.5)(mix1)
     
     block_start = mix2
     for i in range(blocks):
-        block_conv1 = Conv2D(64, kernel_size= 5, strides = 1, padding= "same", trainable = True)(block_start)
+        block_conv1 = Conv2D(64, kernel_size= 5, strides = 1, padding= "same", trainable = True, dilation_rate = 2**(i%4))(block_start)
         block_act = ReLU()(block_conv1)
         block_drop = SpatialDropout2D(0.5)(block_act)
-        block_conv2 = Conv2D(64, kernel_size= 5, strides = 1, padding= "same", trainable = True)(block_drop)
+        block_conv2 = Conv2D(64, kernel_size= 5, strides = 1, padding= "same", trainable = True, dilation_rate = 2**(i%4))(block_drop)
         block_norm = BatchNormalization(scale = True, trainable = True)(block_conv2)
         block_start = Add()([block_start,block_norm])
         
