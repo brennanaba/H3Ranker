@@ -82,13 +82,13 @@ def batch_it(data, batch = 1, batchmin = 0):
                 pair[pair == -1] = -float("Inf")
                 pair[np.isnan(pair)] = -float("Inf")
                 first = pair[0] 
-                first = np.rint(encode_distances(first, 1e-6))
+                first = np.rint(encode_distances(first, 1e-4))
                 second = pair[1]
-                second = np.rint(encode_angles(second, 1e-6))
+                second = np.rint(encode_angles(second, 1e-4))
                 second1 = pair[2]
-                second1 = np.rint(encode_angles(second1, 1e-6))
+                second1 = np.rint(encode_angles(second1, 1e-4))
                 second2 = pair[3]
-                second2 = np.rint(encode_angles(second2, 1e-6))
+                second2 = np.rint(encode_angles(second2, 1e-4))
                 seq = str(df[df.ID == structs[i]].Sequence.iloc[0])
                 first_in = one_hot(np.array([int(dict_[x]) for x in seq]))
                 if first_in.shape[0:2] ==  first.shape[0:2]:
