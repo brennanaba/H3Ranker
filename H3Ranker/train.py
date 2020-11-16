@@ -127,7 +127,7 @@ if __name__ == "__main__":
         val_loss_one = []
         train_loss_one = []
         for i in indices:
-            train_loss_one += model.fit(train_labels[i], train_data[i], verbose = 0).history["loss"]
+            train_loss_one += model.train_on_batch(train_labels[i], train_data[i])
         train_loss = np.mean(train_loss_one)
         print(str(j) + " " + str(train_loss), end=" ")
         for i in range(len(val_data)):
