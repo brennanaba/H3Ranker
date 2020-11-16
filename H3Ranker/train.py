@@ -23,7 +23,7 @@ def gauss_encode_distance(measured, std = (dist_bins[3] - dist_bins[2])):
         return answer
     else:
         answer[1:-1] = (1/std*np.sqrt(2*np.pi))*np.exp((-((mean_dist_bins - measured)/std)**2)/2)
-        return answer/np.sum(answer)
+        return np.rint(answer/np.max(answer))
     
 @jit
 def gauss_encode_angles(measured, std = (bins[3] - bins[2])):
@@ -33,7 +33,7 @@ def gauss_encode_angles(measured, std = (bins[3] - bins[2])):
         return answer
     else:
         answer[1:] = (1/std*np.sqrt(2*np.pi))*np.exp((-(np.abs(measured%360 - mean_angle_bins%360)/std)**2)/2)
-        return answer/np.sum(answer)
+        return np.rint(answer/np.max(answer))
 
 @jit
 def encode_distances(matrix, std = (dist_bins[3] - dist_bins[2])):
