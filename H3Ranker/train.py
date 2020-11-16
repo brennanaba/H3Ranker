@@ -16,24 +16,24 @@ classes = len(bins)
 def gauss_encode_distance(measured, std = (dist_bins[3] - dist_bins[2])):
     answer = np.zeros(classes)
     if measured < 0:
-        answer[0] = 1.0
+        answer[0] = 1
         return answer
     elif measured > dist_bins[-1]:
-        answer[-1] = 1.0
+        answer[-1] = 1
         return answer
     else:
         answer[1:-1] = (1/std*np.sqrt(2*np.pi))*np.exp((-((mean_dist_bins - measured)/std)**2)/2)
-        return np.rint(answer/np.max(answer))
+        return answer/np.sum(answer)
     
 @jit
 def gauss_encode_angles(measured, std = (bins[3] - bins[2])):
     answer = np.zeros(classes)
     if measured < -180:
-        answer[0] = 1.0
+        answer[0] = 1
         return answer
     else:
         answer[1:] = (1/std*np.sqrt(2*np.pi))*np.exp((-(np.abs(measured%360 - mean_angle_bins%360)/std)**2)/2)
-        return np.rint(answer/np.max(answer))
+        return answer/np.sum(answer)
 
 @jit
 def encode_distances(matrix, std = (dist_bins[3] - dist_bins[2])):
@@ -82,13 +82,13 @@ def batch_it(data, batch = 1, batchmin = 0):
                 pair[pair == -1] = -float("Inf")
                 pair[np.isnan(pair)] = -float("Inf")
                 first = pair[0] 
-                first = np.rint(encode_distances(first, 1e-4))
+                first = encode_distances(first, float(resol[i])/2)
                 second = pair[1]
-                second = np.rint(encode_angles(second, 1e-4))
+                second = encode_angles(second, float(resol[i])*angle_diff/(2*dist_diff))
                 second1 = pair[2]
-                second1 = np.rint(encode_angles(second1, 1e-4))
+                second1 = encode_angles(second1, float(resol[i])*angle_diff/(2*dist_diff))
                 second2 = pair[3]
-                second2 = np.rint(encode_angles(second2, 1e-4))
+                second2 = encode_angles(second2, float(resol[i])*angle_diff/(2*dist_diff))
                 seq = str(df[df.ID == structs[i]].Sequence.iloc[0])
                 first_in = one_hot(np.array([int(dict_[x]) for x in seq]))
                 if first_in.shape[0:2] ==  first.shape[0:2]:
