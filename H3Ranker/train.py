@@ -108,13 +108,9 @@ if __name__ == "__main__":
     print("Saving model to: " + latest)
     model = deep2d_model(lr = 1e-4)
     
-    train_data, train_labels = batch_it(data,4,1)
+    
     val_data, val_labels = batch_it(val_table)
     
-    
-    indices = np.arange(len(train_data))
-    np.random.seed(24)
-    np.random.shuffle(indices)
     
     
     val_loss = []
@@ -125,6 +121,10 @@ if __name__ == "__main__":
     o = 0
     print("Training loss    | Validation Loss")
     for j in range(500):
+        train_data, train_labels = batch_it(data.sample(frac = 0.5),4,1)
+        indices = np.arange(len(train_data))
+        np.random.seed(24)
+        np.random.shuffle(indices)
         val_loss_one = []
         train_loss_one = []
         for i in indices:
