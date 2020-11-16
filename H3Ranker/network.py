@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from keras.models import Model
 from keras.optimizers import Adam
-from keras.losses import kl_divergence, mse
+from keras.losses import kl_divergence, mse, CategoricalCrossentropy
 from keras.layers import Activation, Add, Conv2D, SpatialDropout2D, Permute, ReLU, Input, BatchNormalization
 from keras import backend as K
 import numpy as np
@@ -78,5 +78,5 @@ def deep2d_model(lr = 1e-3, blocks = 10):
     phi_end = Activation(activation='softmax')(phi_1)
     
     model = Model(inp, outputs = [dist_end,omega_end,theta_end,phi_end])
-    model.compile(optimizer = Adam(lr), loss = KLDivergence)
+    model.compile(optimizer = Adam(lr), loss = CategoricalCrossentropy())
     return model
