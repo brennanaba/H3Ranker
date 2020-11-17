@@ -9,8 +9,8 @@ current_directory = os.path.dirname(os.path.realpath(__file__))
 
 def generate_data(pdb,i,resol):
     fab = db.fetch(pdb).fabs[i]
-    heavy_chain = fab.get_VH()
-    light_chain = fab.get_VL()
+    heavy_chain = db.db_summary[pdb]["fabs"][i]["Hchain"]
+    light_chain = db.db_summary[pdb]["fabs"][i]["Lchain"]
     try:
         Hchain = [ch for ch in fab.get_structure().get_chains() if ch.get_id() == heavy_chain][0]
         Lchain = [ch for ch in fab.get_structure().get_chains() if ch.get_id() == light_chain][0]
