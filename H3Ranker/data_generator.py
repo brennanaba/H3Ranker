@@ -145,7 +145,7 @@ if __name__ == "__main__":
     with open(os.path.join(current_directory,"data.csv"), "w+") as file:
         file.write("ID,Sequence,Resolution\n")
 
-    for pdb in pdbs[:100]:
+    for pdb in pdbs:
         p = db.fetch(pdb)
         for i in range(len(p.fabs)):
             try:
