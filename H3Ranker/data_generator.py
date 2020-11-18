@@ -127,7 +127,7 @@ def generate_data(pdb,i,resol):
     
     np.save(os.path.join(os.path.join(current_directory,"data"), pdb + heavy_chain), output_matrix)
 
-    with open(os.path.join(current_directory,"data.csv"), "a+") as file:
+    with open(os.path.join(current_directory,"../../data.csv"), "a+") as file:
         file.write(pdb + heavy_chain + "," + fv_seq + "," + resol + "\n")
  
 if __name__ == "__main__":
