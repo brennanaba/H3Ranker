@@ -152,6 +152,7 @@ if __name__ == "__main__":
                 generate_data(pdb, i, p.get_resolution())
             except Exception as e:
                 print(pdb)
+                raise e
 
 
     
