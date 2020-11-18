@@ -42,7 +42,7 @@ if __name__ == "__main__":
     # If run as main calculates H3 geometries for all antibodies in SABDAB.
     try:
         from ABDB.ABDB_updater import update
-        update([])
+        #update([])
     except Exception:
         print("Update Failed")
 
