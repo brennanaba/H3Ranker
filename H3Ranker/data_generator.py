@@ -6,38 +6,130 @@ db.set_numbering_scheme("chothia")
 
 import os
 current_directory = os.path.dirname(os.path.realpath(__file__))
+def aligned_heavy(heavy_numbers, heavy_residues):
+    seq = ""
+    res = []
+    res_dict = {x.id : x for x in heavy_residues}
+    assert (31,"C") not in heavy_numbers, "H1 Loop too long to be aligned"
+    assert (52,"D") not in heavy_numbers, "H2 Loop too long to be aligned"
+    assert (82,"D") not in heavy_numbers, "Too many residues at position 82"
+    assert (100,"M") not in heavy_numbers, "H3 Loop too long to be aligned"
+    assert not any([(x, "A") in heavy_numbers and x not in [31,52,82,100] for x in range(114)]), "Insertion on unexpected residue"
+    
+    
+    def get_or_fill_seq(key):
+        if key in heavy_numbers:
+            return heavy_numbers[key]
+        else:
+            return "-"
+        
+    def get_or_fill_res(key):
+        key = (" ",) + key
+        if key in res_dict:
+            return res_dict[key]
+        else:
+            return [None]
+    
+    for i in range(1,114):
+        base = (i, " ")
+        seq += get_or_fill_seq(base)
+        res.append(get_or_fill_res(base))
+        if i == 31:
+            for let in ["A", "B"]:
+                base = (i, let)
+                seq += get_or_fill_seq(base)
+                res.append(get_or_fill_res(base))
+        elif i == 52:
+            for let in ["A", "B", "C"]:
+                base = (i, let)
+                seq += get_or_fill_seq(base)
+                res.append(get_or_fill_res(base))
+        elif i == 82:
+            for let in ["A", "B", "C"]:
+                base = (i, let)
+                seq += get_or_fill_seq(base)
+                res.append(get_or_fill_res(base))
+        elif i == 100:
+            for let in ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"]:
+                base = (i, let)
+                seq += get_or_fill_seq(base)
+                res.append(get_or_fill_res(base))
+    return seq, res
+
+
+def aligned_light(heavy_numbers, heavy_residues):
+    seq = ""
+    res = []
+    res_dict = {x.id : x for x in heavy_residues}
+    assert (30,"G") not in heavy_numbers, "L1 Loop too long to be aligned"
+    assert (95,"D") not in heavy_numbers, "L3 Loop too long to be aligned"
+    assert (106,"M") not in heavy_numbers, "Too many residues at position 106"
+    assert not any([(x, "A") in heavy_numbers and x not in [30,95,106] for x in range(110)]), "Insertion on unexpected residue"
+    
+    
+    def get_or_fill_seq(key):
+        if key in heavy_numbers:
+            return heavy_numbers[key]
+        else:
+            return "-"
+        
+    def get_or_fill_res(key):
+        key = (" ",) + key
+        if key in res_dict:
+            return res_dict[key]
+        else:
+            return [None]
+    
+    for i in range(1,110):
+        base = (i, " ")
+        seq += get_or_fill_seq(base)
+        res.append(get_or_fill_res(base))
+        if i == 30:
+            for let in ["A", "B", "C", "D", "E", "F"]:
+                base = (i, let)
+                seq += get_or_fill_seq(base)
+                res.append(get_or_fill_res(base))
+        elif i == 95:
+            for let in ["A", "B", "C", "D", "E", "F"]:
+                base = (i, let)
+                seq += get_or_fill_seq(base)
+                res.append(get_or_fill_res(base))
+        elif i == 106:
+            for let in ["A"]:
+                base = (i, let)
+                seq += get_or_fill_seq(base)
+                res.append(get_or_fill_res(base))
+    return seq, res
 
 def generate_data(pdb,i,resol):
     fab = db.fetch(pdb).fabs[i]
     heavy_chain = db.db_summary[pdb]["fabs"][i]["Hchain"]
     light_chain = db.db_summary[pdb]["fabs"][i]["Lchain"]
-    try:
-        Hchain = [ch for ch in fab.get_structure().get_chains() if ch.get_id() == heavy_chain][0]
-        Lchain = [ch for ch in fab.get_structure().get_chains() if ch.get_id() == light_chain][0]
-    except AttributeError:
-        print(pdb + heavy_chain)
-    except KeyError:
-        print(pdb + heavy_chain)
+    
+    Hchain = [ch for ch in fab.get_structure().get_chains() if ch.get_id() == heavy_chain][0]
+    Lchain = [ch for ch in fab.get_structure().get_chains() if ch.get_id() == light_chain][0]
     
     Hresidues = [r for r in Hchain.get_residues() if r.get_id()[0] == " " and r.get_id()[1] < 114]
     Lresidues = [r for r in Lchain.get_residues() if r.get_id()[0] == " " and r.get_id()[1] < 110]
+    Hnumb = fab.get_numbering()["H"]
+    Lnumb = fab.get_numbering()["L"]
+    
+    Hseq, Hresidues = aligned_heavy(Hnumb, Hresidues)
+    Lseq, Lresidues = aligned_light(Lnumb, Lresidues)
+    
     residues = Hresidues + [[None]] + Lresidues
-
-
-    Hseq = fab.get_numbering()["H"]
-    Lseq = fab.get_numbering()["L"]
-    fv_seq = "".join([Hseq[x] for x in Hseq if x[0] < 114]) + "-" + "".join([Lseq[x] for x in Lseq if x[0] < 109])
+    fv_seq = Hseq + "-" + Lseq
     assert len(fv_seq) > 1
     
     dist_mat, cb_cb_dihedral_mat, cb_ca_dihedral_mat, ca_cb_cb_planar_mat = geom_from_residues(residues)
 
     output_matrix = np.stack([dist_mat, cb_cb_dihedral_mat, cb_ca_dihedral_mat, ca_cb_cb_planar_mat])
     
-    np.save(os.path.join(os.path.join(current_directory,"../../data"), pdb + heavy_chain), output_matrix)
+    np.save(os.path.join(os.path.join(current_directory,"data"), pdb + heavy_chain), output_matrix)
 
     with open(os.path.join(current_directory,"data.csv"), "a+") as file:
         file.write(pdb + heavy_chain + "," + fv_seq + "," + resol + "\n")
-        
+ 
 if __name__ == "__main__":
     # If run as main calculates H3 geometries for all antibodies in SABDAB.
     try:
