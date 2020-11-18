@@ -125,9 +125,9 @@ def generate_data(pdb,i,resol):
 
     output_matrix = np.stack([dist_mat, cb_cb_dihedral_mat, cb_ca_dihedral_mat, ca_cb_cb_planar_mat])
     
-    np.save(os.path.join(os.path.join(current_directory,"data"), pdb + heavy_chain), output_matrix)
+    np.save(os.path.join(os.path.join(current_directory,"../../data"), pdb + heavy_chain), output_matrix)
 
-    with open(os.path.join(current_directory,"../../data.csv"), "a+") as file:
+    with open(os.path.join(current_directory,"data.csv"), "a+") as file:
         file.write(pdb + heavy_chain + "," + fv_seq + "," + resol + "\n")
  
 if __name__ == "__main__":
