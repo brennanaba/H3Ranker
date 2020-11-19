@@ -2,6 +2,8 @@ import numpy as np
 import pandas as pd
 from numba import jit
 from H3Ranker.network import dist_bins, mean_dist_bins, bins, mean_angle_bins, deep2d_model, one_hot
+from keras.utils import Sequence
+from keras.callbacks import EarlyStopping
 import os
 import sys
 
@@ -57,50 +59,56 @@ def encode_angles(matrix, std = (bins[3] - bins[2])):
             finish[i,j] = gauss_encode_angles(matrix[i,j], std = std)
     return finish
 
-def batch_it(data, batch = 1, batchmin = 0):
-    """ Batches training data into groups of `batch` with the same sequence lenght. 
-    If there are less than `batchmin` with the same sequence length, they are discarded.
-    """
-    train_data = []
-    train_labels = []
-    data["seqlen"] = [len(str(x)) for x in data.Sequence.values]
-    lens = np.unique(data.seqlen.values)
-    dist_diff = (dist_bins[3] - dist_bins[2])
-    angle_diff = (bins[3] - bins[2])
-    for l in lens:
-        df = data[data.seqlen == l]
-        for j in range(len(df)//batch + 1):
-            structs = df.ID.values[j*batch:(j+1)*batch]
-            resol = df.Resolution.values[j*batch:(j+1)*batch]
-            batch_tfirst = []
-            batch_tsecond = []
-            batch_tsecond1 = []
-            batch_tsecond2 = []
-            batch_tlabels = []
-            for i in range(len(structs)):
-                pair = np.load(os.path.join(current_directory, "../../data/"+structs[i]+".npy"))
-                pair[pair == -1] = -float("Inf")
-                pair[np.isnan(pair)] = -float("Inf")
-                first = pair[0] 
-                first = encode_distances(first)
-                second = pair[1]
-                second = encode_angles(second)
-                second1 = pair[2]
-                second1 = encode_angles(second1)
-                second2 = pair[3]
-                second2 = encode_angles(second2)
-                seq = str(df[df.ID == structs[i]].Sequence.iloc[0])
-                first_in = one_hot(np.array([int(dict_[x]) for x in seq]))
-                if first_in.shape[0:2] ==  first.shape[0:2]:
-                    batch_tlabels.append(first_in)
-                    batch_tfirst.append(first)
-                    batch_tsecond.append(second)
-                    batch_tsecond1.append(second1)
-                    batch_tsecond2.append(second2)
-            if len(batch_tfirst) > batchmin:
-                train_labels.append(np.array(batch_tlabels))
-                train_data.append([np.array(batch_tfirst), np.array(batch_tsecond),np.array(batch_tsecond1),np.array(batch_tsecond2)])
-    return train_data, train_labels
+class DataLoader(Sequence):
+    'Loads data for Keras'
+    def __init__(self, data,shuffle = True, batch_size = 8):
+        'Initialization'
+        self.data = data
+        self.batch_size = batch_size
+        self.shuffle = shuffle
+        self.on_epoch_end()
+
+    def __len__(self):
+        'Denotes the number of batches per epoch'
+        return len(self.data)//self.batch_size
+
+    def __getitem__(self, index):
+        'Generate one batch of data'
+
+        # Generate data
+        X, y = self.__data_generation(self.data[index*self.batch_size:self.batch_size*(index+1)].reset_index(drop=True))
+
+        return X, y
+
+    def on_epoch_end(self):
+        if self.shuffle == True:
+            self.data = self.data.sample(frac = 1).reset_index(drop=True)
+
+    def __data_generation(self, data):
+        'Generates data containing batch_size samples'
+        batch_tfirst = []
+        batch_tsecond = []
+        batch_tsecond1 = []
+        batch_tsecond2 = []
+        batch_tlabels = []
+        # Generate data
+        for i in range(len(data)):
+            pair = np.load(os.path.join(current_directory, "data/"+data.ID[i]+".npy"))
+            pair[pair == -1] = -float("Inf")
+            pair[np.isnan(pair)] = -float("Inf")
+            first = encode_distances(pair[0])
+            second = encode_angles(pair[1])
+            second1 = encode_angles(pair[2])
+            second2 = encode_angles(pair[3])
+            seq = data.Sequence[i]
+            first_in = one_hot(np.array([int(dict_[x]) for x in seq]))
+            batch_tlabels.append(first_in)
+            batch_tfirst.append(first)
+            batch_tsecond.append(second)
+            batch_tsecond1.append(second1)
+            batch_tsecond2.append(second2)
+            
+        return  np.array(batch_tlabels), [np.array(batch_tfirst), np.array(batch_tsecond),np.array(batch_tsecond1),np.array(batch_tsecond2)]
 
 
 if __name__ == "__main__":
@@ -109,39 +117,10 @@ if __name__ == "__main__":
     model = deep2d_model(lr = 1e-4)
     
     
-    val_data, val_labels = batch_it(val_table)
-    train_data, train_labels = batch_it(data.sample(frac = 0.5),4,1)
-    indices = np.arange(len(train_data))
+    training_generator = DataLoader(data, batch_size=4)
+    validation_generator = DataLoader(val_table, batch_size=4)
     
-    
-    
-    val_loss = []
-    train_loss = float("Inf")
-    best_loss = float("Inf")
-    best_model = deep2d_model()
-    
-    o = 0
-    print("Training loss    | Validation Loss")
-    for j in range(500):
-        np.random.shuffle(indices)
-        val_loss_one = []
-        train_loss_one = []
-        for i in indices:
-            train_loss_one += model.train_on_batch(train_labels[i], train_data[i])
-        train_loss = np.mean(train_loss_one)
-        print(str(j) + " " + str(train_loss), end=" ")
-        for i in range(len(val_data)):
-            val_loss_one.append(model.evaluate(val_labels[i], val_data[i], verbose = 0)[0])
-        loss = np.mean(val_loss_one)
-        print(loss)
-        val_loss.append(loss)
-        if loss < best_loss:
-            o = 0
-            best_loss = loss
-            best_model.set_weights(model.get_weights())
-            best_model.save_weights(latest)
-        else:
-            o = o + 1
-            if o > 20:
-                break
+    es =  EarlyStopping(patience= 20, restore_best_weights= True)
+    model.fit(training_generator,validation_data=validation_generator, epochs= 500, callbacks=es)
+    model.save_weights(latest)
             
