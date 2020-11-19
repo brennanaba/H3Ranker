@@ -77,7 +77,7 @@ def batch_it(data, batch = 1, batchmin = 0):
             batch_tsecond2 = []
             batch_tlabels = []
             for i in range(len(structs)):
-                pair = np.load(os.path.join(current_directory, "../../data/"+structs[i]+".npy"))
+                pair = np.load(os.path.join(current_directory, "data/"+structs[i]+".npy"))
                 pair[pair == -1] = -float("Inf")
                 pair[np.isnan(pair)] = -float("Inf")
                 first = pair[0] 
