@@ -41,9 +41,9 @@ def one_hot(num_list, classes = 21):
             finish[i,j] = encode(num_list[i], classes) + encode(num_list[j], classes) 
     return finish
 
-def deep2d_model(lr = 1e-3, blocks = 30):
+def deep2d_model(lr = 1e-3, blocks = 20):
     inp = Input(shape=(None, None, 21))
-    mix1 = Conv2D(64, kernel_size= 9, strides = 1, padding= "same", name = "2Dconv_1", trainable = True)(inp)
+    mix1 = Conv2D(64, kernel_size= 5, strides = 1, padding= "same", name = "2Dconv_1", trainable = True, dilation_rate = 2)(inp)
     mix2 = SpatialDropout2D(0.5)(mix1)
     
     block_start = mix2
