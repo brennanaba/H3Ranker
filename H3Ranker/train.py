@@ -93,7 +93,7 @@ class DataLoader(Sequence):
         batch_tlabels = []
         # Generate data
         for i in range(len(data)):
-            pair = np.load(os.path.join(current_directory, "data/"+data.ID[i]+".npy"))
+            pair = np.load(os.path.join(current_directory, "../../data/"+data.ID[i]+".npy"))
             pair[pair == -1] = -float("Inf")
             pair[np.isnan(pair)] = -float("Inf")
             first = encode_distances(pair[0])
