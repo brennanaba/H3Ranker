@@ -3,7 +3,7 @@ import pandas as pd
 from numba import jit
 from H3Ranker.network import dist_bins, mean_dist_bins, bins, mean_angle_bins, deep2d_model, one_hot
 from keras.utils import Sequence
-from keras.callbacks import EarlyStopping,  ModelCheckpoint, CSVLogger
+from keras.callbacks import EarlyStopping,  ModelCheckpoint, CSVLogger, ReduceLROnPlateau
 import os
 import sys
 
@@ -114,7 +114,7 @@ class DataLoader(Sequence):
 if __name__ == "__main__":
     latest = os.path.join(current_directory, "models", str(sys.argv[1]))
     print("Saving model to: " + latest)
-    model = deep2d_model(lr = 0.001)
+    model = deep2d_model(lr = 0.01)
     
     
     training_generator = DataLoader(data, batch_size=4)
@@ -123,5 +123,6 @@ if __name__ == "__main__":
     es =  EarlyStopping(patience= 20, restore_best_weights= True)
     check = ModelCheckpoint(filepath=latest, save_best_only= True, save_weights_only= True)
     log = CSVLogger("results.csv")
-    model.fit(training_generator,validation_data=validation_generator, epochs= 500, callbacks=[es,check, log], verbose = 2)
+    lr_reduce = ReduceLROnPlateau(cooldown = 5)
+    model.fit(training_generator,validation_data=validation_generator, epochs= 500, callbacks=[es,check, log, lr_reduce], verbose = 2)
             
