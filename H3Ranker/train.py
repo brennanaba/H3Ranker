@@ -3,7 +3,7 @@ import pandas as pd
 from numba import jit
 from H3Ranker.network import dist_bins, mean_dist_bins, bins, mean_angle_bins, deep2d_model, one_hot
 from keras.utils import Sequence
-from keras.callbacks import EarlyStopping
+from keras.callbacks import EarlyStopping,  ModelCheckpoint
 import os
 import sys
 
@@ -121,6 +121,6 @@ if __name__ == "__main__":
     validation_generator = DataLoader(val_table, batch_size=4)
     
     es =  EarlyStopping(patience= 20, restore_best_weights= True)
-    model.fit(training_generator,validation_data=validation_generator, epochs= 500, callbacks=es, verbose = 2)
-    model.save_weights(latest)
+    check = ModelCheckpoint(filepath=latest, save_best_only= True, save_weights_only= True)
+    model.fit(training_generator,validation_data=validation_generator, epochs= 500, callbacks=[es,check], verbose = 2)
             
