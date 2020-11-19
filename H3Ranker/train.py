@@ -121,6 +121,6 @@ if __name__ == "__main__":
     validation_generator = DataLoader(val_table, batch_size=4)
     
     es =  EarlyStopping(patience= 20, restore_best_weights= True)
-    model.fit(training_generator,validation_data=validation_generator, epochs= 500, callbacks=es)
+    model.fit(training_generator,validation_data=validation_generator, epochs= 500, callbacks=es, verbose = 2)
     model.save_weights(latest)
             
