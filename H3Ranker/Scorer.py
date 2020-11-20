@@ -79,7 +79,6 @@ class DecoyScorer:
         
         self.original_residues = get_anchors(pdb_file, chain)
         self.sequence = Polypeptide.Polypeptide(self.original_residues).get_sequence()
-        to_numbers = Polypeptide.d1_to_index
         self.numerical_sequence = [dict_[x] for x in self.sequence]
         model_input = np.expand_dims(one_hot(np.array(self.numerical_sequence)),0)
 

@@ -2,7 +2,7 @@
 from keras.models import Model
 from keras.optimizers import Adam
 from keras.losses import kl_divergence, mse
-from keras.layers import Activation, Add, Conv2D, SpatialDropout2D, Permute, ReLU, Input, BatchNormalization
+from keras.layers import Activation, Add, Conv2D, SpatialDropout2D, Permute, ReLU, Input, BatchNormalization, Layer, Conv1D, SpatialDropout1D
 from keras import backend as K
 import numpy as np
 from numba import jit
@@ -34,19 +34,37 @@ def encode(x, classes):
 
 @jit
 def one_hot(num_list, classes = 21):
-    end_shape = (len(num_list), len(num_list), classes)
+    end_shape = (len(num_list), classes)
     finish = np.zeros(end_shape)
     for i in range(end_shape[0]):
-        for j in range(end_shape[1]):
-            finish[i,j] = encode(num_list[i], classes) + encode(num_list[j], classes) 
+        finish[i] = encode(num_list[i], classes)
     return finish
 
-def deep2d_model(lr = 1e-3, blocks = 20):
-    inp = Input(shape=(None, None, 21))
-    mix1 = Conv2D(64, kernel_size= 5, strides = 1, padding= "same", name = "2Dconv_1", trainable = True, dilation_rate = 2)(inp)
-    mix2 = SpatialDropout2D(0.5)(mix1)
+class Expand_Dimensions(Layer):
+    def __init__(self, **kwargs):
+        super(Expand_Dimensions, self).__init__(**kwargs)
+
+    def call(self, x):
+        a = K.expand_dims(x, axis=-2)
+        b = K.permute_dimensions(a, (0,2,1,3))
+        return a + b
+
+def deep2d_model(lr = 1e-2, blocks = 20, blocks_1d = 5):
+    inp = Input(shape=(None, 21))
+    mix1 = Conv1D(64, kernel_size= 17, strides = 1, padding= "same", name = "1Dconv_1", trainable = True)(inp)
+    block_start_1d = SpatialDropout1D(0.5)(mix1)
     
-    block_start = mix2
+    for i in range(blocks_1d):
+        block_conv1_1d = Conv1D(64, kernel_size= 17, strides = 1, padding= "same", trainable = True)(block_start_1d)
+        block_act_1d = ReLU()(block_conv1_1d)
+        block_drop_1d = SpatialDropout1D(0.5)(block_act_1d)
+        block_conv2_1d = Conv1D(64, kernel_size= 17, strides = 1, padding= "same", trainable = True)(block_drop_1d)
+        block_norm_1d = BatchNormalization(scale = True, trainable = True)(block_conv2_1d)
+        block_start_1d = Add()([block_start_1d,block_norm_1d])
+
+    
+    activate_1d = ReLU()(block_start_1d)
+    block_start = Expand_Dimensions()(activate_1d)
     for i in range(blocks):
         block_conv1 = Conv2D(64, kernel_size= 5, strides = 1, padding= "same", trainable = True, dilation_rate = 2**(i%6))(block_start)
         block_act = ReLU()(block_conv1)
@@ -78,5 +96,5 @@ def deep2d_model(lr = 1e-3, blocks = 20):
     phi_end = Activation(activation='softmax')(phi_1)
     
     model = Model(inp, outputs = [dist_end,omega_end,theta_end,phi_end])
-    model.compile(optimizer = Adam(lr), loss = kl_divergence)
+    model.compile(optimizer = Adam(lr), loss = mse)
     return model
