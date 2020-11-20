@@ -8,7 +8,7 @@ from ABDB import database as db
 
 test_set = ["1x9q", "2d7t", "3hc4", "1mlb", "2e27", "3g5y", "3m8o", "1jpt", "3e8u", "1mqk", "1nlb", "2adf", "2fbj", "2w60", "3gnm", "3hnt", "3v0w", "1mfa", "3mxw", "2xwt", "1dlf", "2ypv", "3ifl", "3liz", "3oz9", "3umt", "4h0h", "4h20", "4hpy", "2v17", "3t65", "1oaq", "2vxv", "3eo9", "3p0y", "1jfq", "2r8s", "3i9g", "3giz", "3go1", "1fns", "1seq", "1gig", "3mlr", "4nzu", "3lmj", "4f57", "2fb4", "3nps"]
 
-current_directory = os.path.dirname(os.path.realpath(__file__))
+current_directory = os.path.join(os.path.dirname(os.path.realpath(__file__)), "../../data")
 data = pd.read_csv(os.path.join(current_directory,"data.csv"))
 
 # Separating the test data from the train and validate data. 
