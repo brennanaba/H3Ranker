@@ -22,8 +22,9 @@ dist_bins = np.linspace(2,16,classes - 2)
 dist_bins = np.append(dist_bins,18)
 mean_dist_bins = (dist_bins[1:] + dist_bins[:-1]) / 2
 
-def KLDivergence(y_true, y_pred):
-    return (kl_divergence(y_true,y_pred) + kl_divergence(y_pred, y_true))/2
+def JensenShannonDivergence(y_true, y_pred):
+    y_mean = (y_true + y_pred)/2
+    return (kl_divergence(y_true,y_mean) + kl_divergence(y_pred, y_mean))/2
 
 
 @jit
@@ -96,5 +97,5 @@ def deep2d_model(lr = 1e-2, blocks = 20, blocks_1d = 5):
     phi_end = Activation(activation='softmax')(phi_1)
     
     model = Model(inp, outputs = [dist_end,omega_end,theta_end,phi_end])
-    model.compile(optimizer = Adam(lr), loss = mse)
+    model.compile(optimizer = Adam(lr), loss = JensenShannonDivergence)
     return model
