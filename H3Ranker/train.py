@@ -120,9 +120,9 @@ if __name__ == "__main__":
     training_generator = DataLoader(data, batch_size=4)
     validation_generator = DataLoader(val_table, batch_size=4)
     
-    #es =  EarlyStopping(patience= 20, restore_best_weights= True)
+    es =  EarlyStopping(patience= 20, restore_best_weights= True)
     check = ModelCheckpoint(filepath=latest, save_best_only= True, save_weights_only= True)
     log = CSVLogger("results.csv")
-    #lr_reduce = ReduceLROnPlateau(cooldown = 5)
-    model.fit(training_generator,validation_data=validation_generator, epochs= 500, callbacks=[check, log], verbose = 2)
+    lr_reduce = ReduceLROnPlateau(cooldown = 8)
+    model.fit(training_generator,validation_data=validation_generator, epochs= 500, callbacks=[check, log, lr_reduce, es], verbose = 2)
             
