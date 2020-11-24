@@ -50,7 +50,7 @@ class Expand_Dimensions(Layer):
         b = K.permute_dimensions(a, (0,2,1,3))
         return a + b
 
-def deep2d_model(lr = 1e-2, blocks = 20, blocks_1d = 5):
+def deep2d_model(lr = 1e-2, blocks = 40, blocks_1d = 5):
     inp = Input(shape=(None, 21))
     mix1 = Conv1D(64, kernel_size= 17, strides = 1, padding= "same", name = "1Dconv_1", trainable = True)(inp)
     block_start_1d = SpatialDropout1D(0.5)(mix1)
