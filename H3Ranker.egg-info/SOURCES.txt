@@ -18,9 +18,14 @@ H3Ranker/models/11thNov.h5
 H3Ranker/models/12thNov.h5
 H3Ranker/models/13thNov.h5
 H3Ranker/models/20thNov.h5
+H3Ranker/models/aligned_test855630.h5
 H3Ranker/models/best_model_173_val.h5
+H3Ranker/models/cat_cross_test850088.h5
 H3Ranker/models/corners.h5
+H3Ranker/models/fv_test850099.h5
+H3Ranker/models/fv_test850137.h5
 H3Ranker/models/jensen_10blocks_50dropout_12binseparation.h5
+H3Ranker/models/jensen_shannon_test857366.h5
 H3Ranker/models/kullback_centered_gaussian_10blocks_50dropout_12binseparation.h5
 H3Ranker/models/kullback_centered_gaussian_10blocks_50dropout_12binseparation_checkpoint.h5
 H3Ranker/models/kullback_centered_gaussian_10blocks_50dropout_12binseparation_pretrain.h5
@@ -34,3 +39,8 @@ H3Ranker/models/kullback_centered_gaussian_20blocks_50dropout_12binseparation_pr
 H3Ranker/models/kullback_centered_gaussian_20blocks_50dropout_12binseparation_pretrained.h5
 H3Ranker/models/kullback_centered_gaussian_20blocks_50dropout_75binseparation_checkpoint.h5
 H3Ranker/models/kullback_centered_gaussian_32blocks_50dropout_12binseparation_pretrain.h5
+H3Ranker/models/mean_squared_error_test.h5
+H3Ranker/models/test.h5
+H3Ranker/models/test847813.h5
+H3Ranker/models/test_857418.h5
+H3Ranker/models/test_859238.h5
