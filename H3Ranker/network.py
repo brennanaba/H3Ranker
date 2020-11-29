@@ -96,6 +96,6 @@ def deep2d_model(lr = 1e-2, blocks = 25, blocks_1d = 5):
     phi_1 = Conv2D(classes, kernel_size= 3, strides = 1, padding= "same", trainable = True)(drop)
     phi_end = Activation(activation='softmax', name = "phi_out")(phi_1)
     
-    model = Model(inp, outputs = [dist_end,omega_end,theta_end,phi_end], loss_weights = [1/6,1/6,2/6,2/6])
-    model.compile(optimizer = Adam(lr), loss = kl_divergence)
+    model = Model(inp, outputs = [dist_end,omega_end,theta_end,phi_end])
+    model.compile(optimizer = Adam(lr), loss = kl_divergence, loss_weights = [1/6,1/6,2/6,2/6])
     return model
