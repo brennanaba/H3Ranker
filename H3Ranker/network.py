@@ -83,19 +83,19 @@ def deep2d_model(lr = 1e-2, blocks = 25, blocks_1d = 5):
     dist_1 = Conv2D(classes, kernel_size= 3, strides = 1, padding= "same", trainable = True)(drop)
     dist_2 = Permute(dims=(2,1,3))(dist_1)
     dist_symmetry = Add()([dist_1,dist_2])
-    dist_end = Activation(activation='softmax')(dist_symmetry)
+    dist_end = Activation(activation='softmax', name= "distance_out")(dist_symmetry)
     
     omega_1 = Conv2D(classes, kernel_size= 3, strides = 1, padding= "same", trainable = True)(drop)
     omega_2 = Permute(dims=(2,1,3))(omega_1)
     omega_symmetry = Add()([omega_1,omega_2])
-    omega_end = Activation(activation='softmax')(omega_symmetry)
+    omega_end = Activation(activation='softmax', name= "omega_out")(omega_symmetry)
     
     theta_1 = Conv2D(classes, kernel_size= 3, strides = 1, padding= "same", trainable = True)(drop)
-    theta_end = Activation(activation='softmax')(theta_1)
+    theta_end = Activation(activation='softmax', name = "theta_out")(theta_1)
     
     phi_1 = Conv2D(classes, kernel_size= 3, strides = 1, padding= "same", trainable = True)(drop)
-    phi_end = Activation(activation='softmax')(phi_1)
+    phi_end = Activation(activation='softmax', name = "phi_out")(phi_1)
     
-    model = Model(inp, outputs = [dist_end,omega_end,theta_end,phi_end])
+    model = Model(inp, outputs = [dist_end,omega_end,theta_end,phi_end], loss_weights = [1/6,1/6,2/6,2/6])
     model.compile(optimizer = Adam(lr), loss = kl_divergence)
     return model
