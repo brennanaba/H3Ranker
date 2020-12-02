@@ -4,7 +4,7 @@ from numba import jit
 
 from H3Ranker.geometries import geom_from_residues
 from H3Ranker.network import deep2d_model, one_hot, bins, dist_bins, latest
-from H3Ranker.train import dict_
+from H3Ranker.train import dict_, sort_angles_into_bins, sort_distance_into_bins
 
 def get_models(fread_output):
     res = PDBParser(QUIET=True).get_structure("outs",fread_output)
@@ -21,18 +21,6 @@ def get_anchors(pdb_file, chain):
     # Chose 91 to 104 as the aminoacids on these residues ar always the same
     residues = [r for r in heavy_chain.get_residues() if r.get_id()[0] == " " and 91 < r.get_id()[1] < 105]
     return residues
-
-
-@jit
-def sort_distance_into_bins(x, dist_bins):
-    x = np.where(np.isnan(x), -1, x)
-    x = np.where((0 < x) & (x < dist_bins[0]), dist_bins[0], x)
-    return np.digitize(x, dist_bins)
-
-@jit
-def sort_angles_into_bins(x, bins):
-    x = np.where(np.isnan(x), -1e5, x)
-    return np.digitize(x, bins)
 
 
 @jit
