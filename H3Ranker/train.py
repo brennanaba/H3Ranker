@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 from numba import jit
 from H3Ranker.network import dist_bins, mean_dist_bins, bins, mean_angle_bins, deep2d_model, one_hot
+from H3Ranker.Scorer import sort_angles_into_bins, sort_distance_into_bins
 from keras.utils import Sequence
 from keras.callbacks import EarlyStopping,  ModelCheckpoint, CSVLogger, ReduceLROnPlateau
 import os
@@ -96,10 +97,10 @@ class DataLoader(Sequence):
             pair = np.load(os.path.join(current_directory, "../../data/"+data.ID[i]+".npy"))
             pair[pair == -1] = -float("Inf")
             pair[np.isnan(pair)] = -float("Inf")
-            first = encode_distances(pair[0])
-            second = encode_angles(pair[1])
-            second1 = encode_angles(pair[2])
-            second2 = encode_angles(pair[3])
+            first = sort_distance_into_bins(pair[0] + np.random.normal(0, (dist_bins[3] - dist_bins[2]), pair[0].shape), dist_bins) #encode_distances(pair[0])
+            second = sort_angles_into_bins(pair[1] + np.random.normal(0, (bins[3] - bins[2]), pair[1].shape), bins) #encode_angles(pair[1])
+            second1 = sort_angles_into_bins(pair[2] + np.random.normal(0, (bins[3] - bins[2]), pair[2].shape), bins) #encode_angles(pair[2])
+            second2 = sort_angles_into_bins(pair[3] + np.random.normal(0, (bins[3] - bins[2]), pair[3].shape), bins) #encode_angles(pair[3])
             seq = data.Sequence[i]
             first_in = one_hot(np.array([int(dict_[x]) for x in seq]))
             batch_tlabels.append(first_in)
