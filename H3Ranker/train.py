@@ -70,6 +70,16 @@ def sort_angles_into_bins(x, bins):
     x = np.where(np.isnan(x), -1e5, x)
     return np.digitize(x, bins)
 
+@jit
+def encode_sorted(sortd, classes = 31):
+    xsize = sortd.shape[0]
+    ysize = sortd.shape[1]
+    result = np.zeros((xsize,ysize,classes))
+    for i in range(xsize):
+        for j in range(ysize):
+            result[i,j,sortd[i,j]] = 1
+    return result
+
 
 class DataLoader(Sequence):
     'Loads data for Keras'
@@ -108,10 +118,10 @@ class DataLoader(Sequence):
             pair = np.load(os.path.join(current_directory, "../../data/"+data.ID[i]+".npy"))
             pair[pair == -1] = -float("Inf")
             pair[np.isnan(pair)] = -float("Inf")
-            first = sort_distance_into_bins(pair[0] + np.random.normal(0, (dist_bins[3] - dist_bins[2]), pair[0].shape), dist_bins) #encode_distances(pair[0])
-            second = sort_angles_into_bins(pair[1] + np.random.normal(0, (bins[3] - bins[2]), pair[1].shape), bins) #encode_angles(pair[1])
-            second1 = sort_angles_into_bins(pair[2] + np.random.normal(0, (bins[3] - bins[2]), pair[2].shape), bins) #encode_angles(pair[2])
-            second2 = sort_angles_into_bins(pair[3] + np.random.normal(0, (bins[3] - bins[2]), pair[3].shape), bins) #encode_angles(pair[3])
+            first = encode_sorted(sort_distance_into_bins(pair[0] + np.random.normal(0, (dist_bins[3] - dist_bins[2]), pair[0].shape), dist_bins)) #encode_distances(pair[0])
+            second = encode_sorted(sort_angles_into_bins(pair[1] + np.random.normal(0, (bins[3] - bins[2]), pair[1].shape), bins)) #encode_angles(pair[1])
+            second1 = encode_sorted(sort_angles_into_bins(pair[2] + np.random.normal(0, (bins[3] - bins[2]), pair[2].shape), bins)) #encode_angles(pair[2])
+            second2 = encode_sorted(sort_angles_into_bins(pair[3] + np.random.normal(0, (bins[3] - bins[2]), pair[3].shape), bins)) #encode_angles(pair[3])
             seq = data.Sequence[i]
             first_in = one_hot(np.array([int(dict_[x]) for x in seq]))
             batch_tlabels.append(first_in)
