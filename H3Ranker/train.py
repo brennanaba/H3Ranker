@@ -61,12 +61,14 @@ def encode_angles(matrix, std = (bins[3] - bins[2])):
 
 @jit
 def sort_distance_into_bins(x, dist_bins):
+    x = np.clip(x, 0, None)
     x = np.where(np.isnan(x), -1, x)
     x = np.where((0 < x) & (x < dist_bins[0]), dist_bins[0], x)
     return np.digitize(x, dist_bins)
 
 @jit
 def sort_angles_into_bins(x, bins):
+    x = (x+180)%360 - 180
     x = np.where(np.isnan(x), -1e5, x)
     return np.digitize(x, bins)
 
