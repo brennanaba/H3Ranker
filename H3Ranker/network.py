@@ -18,8 +18,8 @@ bins = np.arange(-180.,181,angle_steps)
 mean_angle_bins = (bins[1:] + bins[:-1]) / 2
 classes = len(bins)
 
-dist_bins = np.linspace(2,16,classes - 2)
-dist_bins = np.append(dist_bins,18)
+dist_bins = np.linspace(3,17,classes - 2)
+dist_bins = np.append(dist_bins,20)
 mean_dist_bins = (dist_bins[1:] + dist_bins[:-1]) / 2
 
 def JensenShannonDivergence(y_true, y_pred):
