@@ -2,7 +2,6 @@ import numpy as np
 import pandas as pd
 from numba import jit
 from H3Ranker.network import dist_bins, mean_dist_bins, bins, mean_angle_bins, deep2d_model, one_hot
-from H3Ranker.Scorer import sort_angles_into_bins, sort_distance_into_bins
 from keras.utils import Sequence
 from keras.callbacks import EarlyStopping,  ModelCheckpoint, CSVLogger, ReduceLROnPlateau
 import os
@@ -59,6 +58,18 @@ def encode_angles(matrix, std = (bins[3] - bins[2])):
         for j in range(end_shape[1]):
             finish[i,j] = gauss_encode_angles(matrix[i,j], std = std)
     return finish
+
+@jit
+def sort_distance_into_bins(x, dist_bins):
+    x = np.where(np.isnan(x), -1, x)
+    x = np.where((0 < x) & (x < dist_bins[0]), dist_bins[0], x)
+    return np.digitize(x, dist_bins)
+
+@jit
+def sort_angles_into_bins(x, bins):
+    x = np.where(np.isnan(x), -1e5, x)
+    return np.digitize(x, bins)
+
 
 class DataLoader(Sequence):
     'Loads data for Keras'
