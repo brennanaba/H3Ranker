@@ -2,14 +2,13 @@
 from keras.models import Model
 from keras.optimizers import Adam
 from keras.losses import kl_divergence, mse, CategoricalCrossentropy
-from keras.layers import Activation, Add, Conv2D, SpatialDropout2D, Permute, ReLU, Input, BatchNormalization, Layer, Conv1D, SpatialDropout1D
+from keras.layers import Activation, Add, Conv2D, SpatialDropout2D, Permute, ReLU, Input, BatchNormalization, Layer, Conv1D, SpatialDropout1D, Multiply, Reshape,  GlobalAveragePooling2D
 from keras import backend as K
 import numpy as np
 from numba import jit
 import os
 
 current_directory = os.path.dirname(os.path.realpath(__file__))
-latest = os.path.join(current_directory,"models/kullback_centered_gaussian_10blocks_50dropout_12binseparation.h5")
 
 # REMEMBER TO pip install . EACH TIME YOU UPDATE
 
@@ -72,7 +71,14 @@ def deep2d_model(lr = 1e-2, blocks = 25, blocks_1d = 5):
         block_drop = SpatialDropout2D(0.5)(block_act)
         block_conv2 = Conv2D(64, kernel_size= 5, strides = 1, padding= "same", trainable = True, dilation_rate = 2**(i%6))(block_drop)
         block_norm = BatchNormalization(scale = True, trainable = True)(block_conv2)
-        block_start = Add()([block_start,block_norm])
+        
+        attend_pool = GlobalAveragePooling2D()(block_norm)
+        attend_reshape = Reshape((1,1,64))(attend_pool)
+        attend_conv1 = Conv2D(16, activation= "relu", kernel_size = 1, trainable = True)(attend_reshape)
+        attend_out = Conv2D(64, activation= "sigmoid", kernel_size = 1, trainable = True)(attend_conv1)
+        attend_end = Multiply()([attend_out, block_norm])
+        
+        block_start = Add()([block_start,attend_end])
         
     block_end = block_start
     activate = ReLU()(block_end)
