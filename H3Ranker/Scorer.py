@@ -3,7 +3,8 @@ from Bio.PDB import PDBParser, Polypeptide
 from numba import jit
 
 from H3Ranker.geometries import geom_from_residues
-from H3Ranker.network import deep2d_model, one_hot, bins, dist_bins, latest
+from H3Ranker.network import deep2d_model, one_hot, bins, dist_bins
+from H3Ranker.train import dict_, sort_angles_into_bins, sort_distance_into_bins
 
 def get_models(fread_output):
     res = PDBParser(QUIET=True).get_structure("outs",fread_output)
@@ -20,18 +21,6 @@ def get_anchors(pdb_file, chain):
     # Chose 91 to 104 as the aminoacids on these residues ar always the same
     residues = [r for r in heavy_chain.get_residues() if r.get_id()[0] == " " and 91 < r.get_id()[1] < 105]
     return residues
-
-
-@jit
-def sort_distance_into_bins(x, dist_bins):
-    x = np.where(np.isnan(x), -1, x)
-    x = np.where((0 < x) & (x < dist_bins[0]), dist_bins[0], x)
-    return np.digitize(x, dist_bins)
-
-@jit
-def sort_angles_into_bins(x, bins):
-    x = np.where(np.isnan(x), -1e5, x)
-    return np.digitize(x, bins)
 
 
 @jit
@@ -70,7 +59,7 @@ def probability_map_for_given_measurement(probabilty_map, binned_map):
 
 
 class DecoyScorer:
-    def __init__(self, pdb_file, chain, network_weights  = latest, model = deep2d_model()):
+    def __init__(self, pdb_file, chain, network_weights, model = deep2d_model()):
         self.pdb_file = pdb_file
         self.chain = chain
         self.model = model
@@ -78,8 +67,7 @@ class DecoyScorer:
         
         self.original_residues = get_anchors(pdb_file, chain)
         self.sequence = Polypeptide.Polypeptide(self.original_residues).get_sequence()
-        to_numbers = Polypeptide.d1_to_index
-        self.numerical_sequence = [to_numbers[x] for x in self.sequence]
+        self.numerical_sequence = [dict_[x] for x in self.sequence]
         model_input = np.expand_dims(one_hot(np.array(self.numerical_sequence)),0)
 
         self.distance_predictions, self.omega_predictions, self.theta_predictions, self.phi_predictions = self.model.predict(model_input)

@@ -28,7 +28,7 @@ new_data = data[[x[:-1] not in test_set for x in data.ID]]
 new_data = new_data.sample(frac=1).reset_index(drop=True)
 
 # Randomly select 20 distinct structures for validation
-val_set = [x for x in new_data.loc[:20].ID]
+val_set = [x for x in new_data.loc[:100].ID]
 
 # All structures proceeding from antibodies with the same Fv are removed too.
 new_vals = []
