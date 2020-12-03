@@ -3,7 +3,7 @@ from Bio.PDB import PDBParser, Polypeptide
 from numba import jit
 
 from H3Ranker.geometries import geom_from_residues
-from H3Ranker.network import deep2d_model, one_hot, bins, dist_bins, latest
+from H3Ranker.network import deep2d_model, one_hot, bins, dist_bins
 from H3Ranker.train import dict_, sort_angles_into_bins, sort_distance_into_bins
 
 def get_models(fread_output):
@@ -59,7 +59,7 @@ def probability_map_for_given_measurement(probabilty_map, binned_map):
 
 
 class DecoyScorer:
-    def __init__(self, pdb_file, chain, network_weights  = latest, model = deep2d_model()):
+    def __init__(self, pdb_file, chain, network_weights, model = deep2d_model()):
         self.pdb_file = pdb_file
         self.chain = chain
         self.model = model
