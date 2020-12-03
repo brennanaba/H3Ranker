@@ -59,11 +59,9 @@ def encode_angles(matrix, std = (bins[3] - bins[2])):
             finish[i,j] = gauss_encode_angles(matrix[i,j], std = std)
     return finish
 
-@jit
 def sort_distance_into_bins(x, dist_bins):
-    x = np.clip(x, 0, None)
-    x = np.where(np.isnan(x), -1, x)
-    x = np.where((0 < x) & (x < dist_bins[0]), dist_bins[0], x)
+    x[x < dist_bins[0]] = dist_bins[0]
+    x[x == float("Nan")] = -1
     return np.digitize(x, dist_bins)
 
 @jit
@@ -118,8 +116,6 @@ class DataLoader(Sequence):
         # Generate data
         for i in range(len(data)):
             pair = np.load(os.path.join(current_directory, "../../data/"+data.ID[i]+".npy"))
-            pair[pair == -1] = -float("Inf")
-            pair[np.isnan(pair)] = -float("Inf")
             first = encode_sorted(sort_distance_into_bins(pair[0] + np.random.normal(0, (dist_bins[3] - dist_bins[2]), pair[0].shape), dist_bins)) #encode_distances(pair[0])
             second = encode_sorted(sort_angles_into_bins(pair[1] + np.random.normal(0, (bins[3] - bins[2]), pair[1].shape), bins)) #encode_angles(pair[1])
             second1 = encode_sorted(sort_angles_into_bins(pair[2] + np.random.normal(0, (bins[3] - bins[2]), pair[2].shape), bins)) #encode_angles(pair[2])
