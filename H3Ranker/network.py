@@ -25,6 +25,9 @@ mean_dist_bins = (dist_bins[1:] + dist_bins[:-1]) / 2
 
 @jit
 def encode(x, classes):
+    """ One hot encodes a scalar x into a vector of length classes.
+    This is the function used for Sequence encoding.
+    """
     one_hot = np.zeros(classes)
     one_hot[x] = 1
     return one_hot
@@ -32,6 +35,9 @@ def encode(x, classes):
 
 @jit
 def one_hot(num_list, classes=21):
+    """ One hot encodes a 1D vector x.
+    This is the function used for Sequence encoding.
+    """
     end_shape = (len(num_list), classes)
     finish = np.zeros(end_shape)
     for i in range(end_shape[0]):
@@ -40,6 +46,8 @@ def one_hot(num_list, classes=21):
 
 
 class ExpandDimensions(Layer):
+    """ Keras layer that transforms a 1D tensor into a 2D tensor by pairwise addition.
+    """
     def __init__(self, **kwargs):
         super(Expand_Dimensions, self).__init__(**kwargs)
 
@@ -50,6 +58,8 @@ class ExpandDimensions(Layer):
 
 
 def deep2d_model(lr=1e-2, blocks=20, blocks_1d=5):
+    """ Main model function (self-explanatory).
+    """
     inp = Input(shape=(None, 21))
     mix1 = Conv1D(64, kernel_size=17, strides=1, padding="same", name="1Dconv_1", trainable=True)(inp)
     block_start_1d = SpatialDropout1D(0.5)(mix1)

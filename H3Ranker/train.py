@@ -18,6 +18,9 @@ classes = len(bins)
 
 @jit
 def gauss_encode_distance(measured, std=(dist_bins[3] - dist_bins[2])):
+    """ Used for KLDivergence encoding.
+    Encodes each measurement as a gaussian probability distribution
+    """
     answer = np.zeros(classes)
     if measured < 0:
         answer[0] = 1
@@ -32,6 +35,9 @@ def gauss_encode_distance(measured, std=(dist_bins[3] - dist_bins[2])):
 
 @jit
 def gauss_encode_angles(measured, std=(bins[3] - bins[2])):
+    """ Used for KLDivergence encoding.
+    Encodes each measurement as a gaussian probability distribution
+    """
     answer = np.zeros(classes)
     if measured < -180:
         answer[0] = 1
@@ -44,7 +50,8 @@ def gauss_encode_angles(measured, std=(bins[3] - bins[2])):
 
 @jit
 def encode_distances(matrix, std=(dist_bins[3] - dist_bins[2])):
-    """ Goes throught each distance measurement and encodes it into different bins as a gaussian.
+    """ Used for KLDivergence encoding.
+    Goes throught each distance measurement and encodes it into different bins as a gaussian.
     """
     end_shape = (matrix.shape[0], matrix.shape[1], classes)
     finish = np.zeros(end_shape)
@@ -56,7 +63,8 @@ def encode_distances(matrix, std=(dist_bins[3] - dist_bins[2])):
 
 @jit
 def encode_angles(matrix, std=(bins[3] - bins[2])):
-    """ Goes throught each angle measurement and encodes it into different bins as a gaussian.
+    """ Used for KLDivergence encoding.
+    Goes throught each angle measurement and encodes it into different bins as a gaussian.
     """
     end_shape = (matrix.shape[0], matrix.shape[1], classes)
     finish = np.zeros(end_shape)
@@ -67,6 +75,9 @@ def encode_angles(matrix, std=(bins[3] - bins[2])):
 
 
 def sort_distance_into_bins(x, dist_bins):
+    """ Used for CatCrossEntropy encoding.
+    Given a set of distance measurements, it classifies them according to dis_bins
+    """
     x[x < dist_bins[0]] = dist_bins[0]
     x[x == float("Nan")] = -1
     return np.digitize(x, dist_bins)
@@ -74,6 +85,9 @@ def sort_distance_into_bins(x, dist_bins):
 
 @jit
 def sort_angles_into_bins(x, bins):
+    """ Used for CatCrossEntropy encoding.
+    Given a set of angular measurements, it classifies them according to bins
+    """
     x = (x + 180) % 360 - 180
     x = np.where(np.isnan(x), -1e5, x)
     return np.digitize(x, bins)
@@ -81,6 +95,9 @@ def sort_angles_into_bins(x, bins):
 
 @jit
 def encode_sorted(sortd, classes=31):
+    """ Used for CatCrossEntropy encoding.
+    Given a set of classified measurements, it one-hot encodes them
+    """
     xsize = sortd.shape[0]
     ysize = sortd.shape[1]
     result = np.zeros((xsize, ysize, classes))
@@ -114,6 +131,7 @@ class DataLoader(Sequence):
         return x, y
 
     def on_epoch_end(self):
+        """At the end of each epoch shuffle the data"""
         if self.shuffle:
             self.data = self.data.sample(frac=1).reset_index(drop=True)
 

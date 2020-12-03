@@ -9,6 +9,9 @@ current_directory = os.path.dirname(os.path.realpath(__file__))
 
 
 def aligned_heavy(heavy_numbers, heavy_residues):
+    """ Tries to align heavy chain sequence and residues to the template used for the network.
+    If it can't it raises an Assertion Error saying why.
+    """
     seq = ""
     res = []
     res_dict = {x.id: x for x in heavy_residues}
@@ -60,6 +63,9 @@ def aligned_heavy(heavy_numbers, heavy_residues):
 
 
 def aligned_light(heavy_numbers, heavy_residues):
+    """ Tries to align light chain sequence and residues to the template used for the network.
+    If it can't it raises an Assertion Error saying why.
+    """
     seq = ""
     res = []
     res_dict = {x.id: x for x in heavy_residues}
@@ -105,6 +111,10 @@ def aligned_light(heavy_numbers, heavy_residues):
 
 
 def generate_data(pdb, i, resol):
+    """ Generates geometry matrices for the ith Fab in pdb.
+    Data is generated after being aligned to the networks template.
+    The name of the file where it is saved is appended to a csv file.
+    """
     fab = db.fetch(pdb).fabs[i]
     heavy_chain = db.db_summary[pdb]["fabs"][i]["Hchain"]
     light_chain = db.db_summary[pdb]["fabs"][i]["Lchain"]
@@ -144,8 +154,10 @@ if __name__ == "__main__":
 
     # If you do not even have a resolution what are you doing here?
     pdbs = [x for x in db.db_summary if db.db_summary[x]["resolution"].replace('.', '', 1).isnumeric()]
+    # If your resolution is shit you can leave now
     pdbs = [x for x in pdbs if float(db.db_summary[x]["resolution"]) < 3]
 
+    # Initialize csv file
     with open(os.path.join(current_directory, "data.csv"), "w+") as file:
         file.write("ID,Sequence,Resolution\n")
 
@@ -155,4 +167,5 @@ if __name__ == "__main__":
             try:
                 generate_data(pdb, i, p.get_resolution())
             except Exception as e:
+                # If it broke print its name.
                 print(pdb)

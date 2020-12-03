@@ -1,3 +1,7 @@
+""" The code in here is currently unusable.
+It is still done for when only considering H3 loops.
+"""
+
 import numpy as np
 from Bio.PDB import PDBParser, Polypeptide
 from numba import jit
@@ -8,6 +12,11 @@ from H3Ranker.train import dict_, sort_angles_into_bins, sort_distance_into_bins
 
 
 def get_models(fread_output):
+    """ Given a "all_decoy_structures.pdb" file outputted by the Sphinx decoy generator,
+    sorts all decoys into a dictionary.
+
+    If BioPythons PDBParser cn npt find all the models it raises an AssertionError
+    """
     res = PDBParser(QUIET=True).get_structure("outs", fread_output)
     with open(fread_output) as file:
         ids = [x.split()[1] for x in file.readlines() if x.split()[0] == "MODEL"]

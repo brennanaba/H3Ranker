@@ -81,8 +81,7 @@ def ca_cb_cb_planar(ca_coords, cb_coords, mask_value):
 def geom_from_residues(residues, mask_value=-1e5):
     """ Calculates all 4 geometry measurements for a set of residues.
     
-    scaling planar angle so it is in the range (-180,180). Change this back at some point.
-    
+    scaling planar angle so it is in the range (-180,180)
     """
 
     def get_cb_or_ca(residue):
@@ -122,4 +121,5 @@ def geom_from_residues(residues, mask_value=-1e5):
     ca_cb_cb_planar_mat = ca_cb_cb_planar(ca_coords, cb_coords, mask_value)
 
     # Planar angle is rescaled to the range (-180,180) to match dihedral angles.
+    # This is done to make things easier for binning down the line.
     return dist_mat, cb_cb_dihedral_mat, cb_ca_dihedral_mat, 2 * ca_cb_cb_planar_mat - 180
