@@ -88,6 +88,8 @@ class SqueezeAndExcite2D(Layer):
 
 
 class ResidualBlock1D(Layer):
+    """ 1D Residual Block
+    """
     def __init__(self, channels=64, kernel_size=17, dropout=0.5, **kwargs):
         super(ResidualBlock1D, self).__init__(**kwargs)
         self.channels = channels
@@ -110,6 +112,9 @@ class ResidualBlock1D(Layer):
 
 
 class ResidualBlock2D(Layer):
+    """ 2D Residual block with the possibility of Squeeze and Excitation at then end
+
+    """
     def __init__(self, channels=64, kernel_size=5, dropout=0.5, dilation=1, excite=True, squeeze_channels=None,
                  **kwargs):
         super(ResidualBlock2D, self).__init__(**kwargs)
@@ -142,7 +147,7 @@ class ResidualBlock2D(Layer):
 
 
 def deep2d_model(lr=1e-2, blocks=20, blocks_1d=5):
-    """ Main model function (self-explanatory).
+    """ Main model function (hopefully self-explanatory).
     """
     inp = Input(shape=(None, 21))
     mix1 = Conv1D(64, kernel_size=17, strides=1, padding="same", name="1Dconv_1", trainable=True)(inp)
