@@ -146,7 +146,7 @@ class ResidualBlock2D(Layer):
         return self.end([inputs, x])
 
 
-def deep2d_model(lr=1e-2, blocks=20, blocks_1d=5):
+def deep2d_model(lr=1e-3, blocks=15, blocks_1d=5):
     """ Main model function (hopefully self-explanatory).
     """
     inp = Input(shape=(None, 21))
