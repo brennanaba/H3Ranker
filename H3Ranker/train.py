@@ -172,7 +172,7 @@ class DataLoader(Sequence):
 if __name__ == "__main__":
     latest = os.path.join(current_directory, "models", str(sys.argv[1]))
     print("Saving model to: " + latest)
-    model = deep2d_model(lr=0.005)
+    model = deep2d_model()
 
     training_generator = DataLoader(data, batch_size=4)
     validation_generator = DataLoader(val_table, batch_size=4)
