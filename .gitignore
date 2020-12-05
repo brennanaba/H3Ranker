@@ -7,3 +7,4 @@ envH3/
 *.out
 *.run
 .nfs*
+H3Ranker/data/
