@@ -44,3 +44,4 @@ H3Ranker/models/test.h5
 H3Ranker/models/test847813.h5
 H3Ranker/models/test_857418.h5
 H3Ranker/models/test_859238.h5
+H3Ranker/models/test_860335.h5
