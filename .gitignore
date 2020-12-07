@@ -10,3 +10,4 @@ envH3/
 H3Ranker/data/
 H3Ranker.egg-info
 results.csv
+H3Ranker/*.csv
