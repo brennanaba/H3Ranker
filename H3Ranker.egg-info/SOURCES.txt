@@ -2,7 +2,6 @@ MANIFEST.in
 README.md
 setup.py
 H3Ranker/Scorer.py
-H3Ranker/Train_general.py
 H3Ranker/__init__.py
 H3Ranker/data_generator.py
 H3Ranker/data_sorter.py
@@ -42,5 +41,10 @@ H3Ranker/models/kullback_centered_gaussian_32blocks_50dropout_12binseparation_pr
 H3Ranker/models/mean_squared_error_test.h5
 H3Ranker/models/test.h5
 H3Ranker/models/test847813.h5
+H3Ranker/models/test_617cf09e.h5
 H3Ranker/models/test_857418.h5
 H3Ranker/models/test_859238.h5
+H3Ranker/models/test_860335.h5
+H3Ranker/models/test_867029.h5
+H3Ranker/models/test_d0675481.h5
+H3Ranker/models/test_e0e0f7f4.h5
