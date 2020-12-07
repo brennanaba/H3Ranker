@@ -181,5 +181,5 @@ if __name__ == "__main__":
     check = ModelCheckpoint(filepath=latest, save_best_only=True, save_weights_only=True)
     log = CSVLogger("results.csv")
     lr_reduce = ReduceLROnPlateau(cooldown=5)
-    model.fit(training_generator, validation_data=validation_generator, epochs=500,
+    model.fit(training_generator, validation_data=validation_generator, epochs=500, verbose = 2,
               callbacks=[check, log, lr_reduce, es])
