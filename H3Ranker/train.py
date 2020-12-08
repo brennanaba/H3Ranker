@@ -145,18 +145,18 @@ class DataLoader(Sequence):
         # Generate data
         for i in range(len(data)):
             pair = np.load(os.path.join(current_directory, "../../data/" + data.ID[i] + ".npy"))
-            first = encode_sorted(
-                sort_distance_into_bins(pair[0] + np.random.normal(0, (dist_bins[3] - dist_bins[2]), pair[0].shape),
-                                        dist_bins))  # encode_distances(pair[0])
-            second = encode_sorted(
-                sort_angles_into_bins(pair[1] + np.random.normal(0, (bins[3] - bins[2]), pair[1].shape),
-                                      bins))  # encode_angles(pair[1])
-            second1 = encode_sorted(
-                sort_angles_into_bins(pair[2] + np.random.normal(0, (bins[3] - bins[2]), pair[2].shape),
-                                      bins))  # encode_angles(pair[2])
-            second2 = encode_sorted(
-                sort_angles_into_bins(pair[3] + np.random.normal(0, (bins[3] - bins[2]), pair[3].shape),
-                                      bins))  # encode_angles(pair[3])
+            first = encode_distances(pair[0]) #encode_sorted(
+                #sort_distance_into_bins(pair[0] + np.random.normal(0, (dist_bins[3] - dist_bins[2]), pair[0].shape),
+                 #                       dist_bins))  # 
+            second = encode_angles(pair[1]) #encode_sorted(
+                #sort_angles_into_bins(pair[1] + np.random.normal(0, (bins[3] - bins[2]), pair[1].shape),
+                 #                     bins))  # encode_angles(pair[1])
+            second1 = encode_angles(pair[2])#encode_sorted(
+                #sort_angles_into_bins(pair[2] + np.random.normal(0, (bins[3] - bins[2]), pair[2].shape),
+                 #                     bins))  # encode_angles(pair[2])
+            second2 = encode_angles(pair[3])# encode_sorted(
+                #sort_angles_into_bins(pair[3] + np.random.normal(0, (bins[3] - bins[2]), pair[3].shape),
+                 #                     bins))  # encode_angles(pair[3])
             seq = data.Sequence[i]
             first_in = one_hot(np.array([int(dict_[x]) for x in seq]))
             batch_tlabels.append(first_in)
