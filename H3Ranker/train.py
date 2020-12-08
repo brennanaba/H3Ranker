@@ -144,6 +144,8 @@ class DataLoader(Sequence):
         batch_tlabels = []
         # Generate data
         for i in range(len(data)):
+            pair[pair == -1] = -float("Inf")
+            pair[np.isnan(pair)] = -float("Inf")
             pair = np.load(os.path.join(current_directory, "../../data/" + data.ID[i] + ".npy"))
             first = encode_distances(pair[0]) #encode_sorted(
                 #sort_distance_into_bins(pair[0] + np.random.normal(0, (dist_bins[3] - dist_bins[2]), pair[0].shape),
