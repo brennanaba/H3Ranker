@@ -8,6 +8,6 @@ envH3/
 *.run
 .nfs*
 H3Ranker/data/
-H3Ranker.egg-info
+H3Ranker.egg-info/
 results.csv
 H3Ranker/*.csv
