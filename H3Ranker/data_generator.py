@@ -22,18 +22,12 @@ def aligned_heavy(heavy_numbers, heavy_residues):
     assert not any([(x, "A") in heavy_numbers and x not in [31, 52, 82, 100] for x in
                     range(114)]), "Insertion on unexpected residue"
 
-    def get_or_fill_seq(key):
-        if key in heavy_numbers:
-            return heavy_numbers[key]
+    def get_or_fill_res_and_seq(key):
+        reskey = (" ",) + key
+        if (key in heavy_numbers) and reskey in res_dict:
+            return heavy_numbers[key], res_dict[reskey]
         else:
-            return "-"
-
-    def get_or_fill_res(key):
-        key = (" ",) + key
-        if key in res_dict:
-            return res_dict[key]
-        else:
-            return [None]
+            return "-", [None]
 
     for i in range(1, 114):
         base = (i, " ")
@@ -42,23 +36,27 @@ def aligned_heavy(heavy_numbers, heavy_residues):
         if i == 31:
             for let in ["A", "B"]:
                 base = (i, let)
-                seq += get_or_fill_seq(base)
-                res.append(get_or_fill_res(base))
+                amino, resid = get_or_fill_res_and_seq(base)
+                seq += amino
+                res.append(resid)
         elif i == 52:
             for let in ["A", "B", "C"]:
                 base = (i, let)
-                seq += get_or_fill_seq(base)
-                res.append(get_or_fill_res(base))
+                amino, resid = get_or_fill_res_and_seq(base)
+                seq += amino
+                res.append(resid)
         elif i == 82:
             for let in ["A", "B", "C"]:
                 base = (i, let)
-                seq += get_or_fill_seq(base)
-                res.append(get_or_fill_res(base))
+                amino, resid = get_or_fill_res_and_seq(base)
+                seq += amino
+                res.append(resid)
         elif i == 100:
             for let in ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"]:
                 base = (i, let)
-                seq += get_or_fill_seq(base)
-                res.append(get_or_fill_res(base))
+                amino, resid = get_or_fill_res_and_seq(base)
+                seq += amino
+                res.append(resid)
     return seq, res
 
 
@@ -95,18 +93,21 @@ def aligned_light(heavy_numbers, heavy_residues):
         if i == 30:
             for let in ["A", "B", "C", "D", "E", "F"]:
                 base = (i, let)
-                seq += get_or_fill_seq(base)
-                res.append(get_or_fill_res(base))
+                amino, resid = get_or_fill_res_and_seq(base)
+                seq += amino
+                res.append(resid)
         elif i == 95:
             for let in ["A", "B", "C", "D", "E", "F"]:
                 base = (i, let)
-                seq += get_or_fill_seq(base)
-                res.append(get_or_fill_res(base))
+                amino, resid = get_or_fill_res_and_seq(base)
+                seq += amino
+                res.append(resid)
         elif i == 106:
             for let in ["A"]:
                 base = (i, let)
-                seq += get_or_fill_seq(base)
-                res.append(get_or_fill_res(base))
+                amino, resid = get_or_fill_res_and_seq(base)
+                seq += amino
+                res.append(resid)
     return seq, res
 
 
