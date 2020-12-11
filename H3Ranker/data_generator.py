@@ -73,7 +73,7 @@ def aligned_light(heavy_numbers, heavy_residues):
     assert (95, "D") not in heavy_numbers, "L3 Loop too long to be aligned"
     assert (106, "M") not in heavy_numbers, "Too many residues at position 106"
     assert not any(
-        [(x, "A") in heavy_numbers and x not in [30, 95, 106] for x in range(110)]), "Insertion on unexpected residue"
+        [(x, "A") in heavy_numbers and x not in [30, 95, 106] for x in range(108)]), "Insertion on unexpected residue"
 
     def get_or_fill_seq(key):
         if key in heavy_numbers:
@@ -123,7 +123,7 @@ def generate_data(pdb, i, resol):
     Lchain = [ch for ch in fab.get_structure().get_chains() if ch.get_id() == light_chain][0]
 
     Hresidues = [r for r in Hchain.get_residues() if r.get_id()[0] == " " and r.get_id()[1] < 114]
-    Lresidues = [r for r in Lchain.get_residues() if r.get_id()[0] == " " and r.get_id()[1] < 110]
+    Lresidues = [r for r in Lchain.get_residues() if r.get_id()[0] == " " and r.get_id()[1] < 108]
     Hnumb = fab.get_numbering()["H"]
     Lnumb = fab.get_numbering()["L"]
 
